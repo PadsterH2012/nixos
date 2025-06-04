@@ -10,7 +10,7 @@
       ./hardware-configuration.nix
     ];
 
-  # Bootloader - Keep GRUB for BIOS boot
+  # Bootloader - GRUB for BIOS boot
   boot.loader.grub.enable = true;
   boot.loader.grub.device = "/dev/sda";
   boot.loader.grub.useOSProber = true;
