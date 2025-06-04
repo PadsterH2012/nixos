@@ -10,9 +10,10 @@
       ./hardware-configuration.nix
     ];
 
-  # Bootloader - Updated for Proxmox VM
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  # Bootloader - Keep GRUB for BIOS boot
+  boot.loader.grub.enable = true;
+  boot.loader.grub.device = "/dev/sda";
+  boot.loader.grub.useOSProber = true;
   
   # Proxmox VM optimizations
   boot.initrd.availableKernelModules = [ "virtio_pci" "virtio_scsi" "ahci" "sd_mod" ];
