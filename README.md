@@ -55,7 +55,8 @@ curl -o /tmp/config.nix https://raw.githubusercontent.com/PadsterH2012/nixos/ref
 ### 🖥️ **Main Configuration** (`configuration.nix`)
 - **Purpose**: Entry point that imports all modules and defines the user account
 - **Key Features**:
-  - Creates user "paddy" with admin privileges
+  - Creates user "paddy" with admin privileges (wheel group)
+  - **Passwordless sudo** for development convenience
   - Enables unfree packages (for VS Code, Chrome, etc.)
   - Installs user applications (Firefox, Google Chrome)
   - Sets up printing services
@@ -226,6 +227,19 @@ seahorse  # GUI keyring manager (optional)
 systemctl --user status gnome-keyring-daemon
 ```
 
+### **🔐 Security Configuration**
+
+**Passwordless Sudo**: The configuration enables passwordless sudo for the `wheel` group for development convenience:
+
+```bash
+# No password required for sudo commands
+sudo nixos-rebuild switch
+sudo systemctl restart service-name
+sudo docker system prune
+```
+
+**Note**: This is configured for development environments. For production systems, consider keeping password requirements enabled.
+
 ### **🔄 Auto-Update Management Commands**
 
 After deployment, you can manage automatic updates with these commands:
@@ -276,6 +290,7 @@ list-generations
 - ✅ Tmux configuration with custom key bindings
 - ✅ NFS client for network drives
 - ✅ Automated setup scripts
+- ✅ Passwordless sudo for seamless development
 
 ### **System Maintenance**
 - ✅ Automatic daily updates at 2:00 AM

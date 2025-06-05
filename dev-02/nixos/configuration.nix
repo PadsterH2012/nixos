@@ -40,6 +40,9 @@
     ];
   };
 
+  # Configure sudo to not require password for wheel group (development convenience)
+  security.sudo.wheelNeedsPassword = false;
+
   # Allow unfree packages (needed for VS Code)
   nixpkgs.config.allowUnfree = true;
 
