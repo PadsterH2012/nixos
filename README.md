@@ -119,6 +119,7 @@ curl -o /tmp/config.nix https://raw.githubusercontent.com/PadsterH2012/nixos/ref
 - **Purpose**: VS Code installation with FHS environment for extension compatibility
 - **Key Features**:
   - **FHS environment** - allows normal extension installation through marketplace
+  - **GNOME Keyring integration** - enables extension authentication (login tokens)
   - Pre-configured settings for development
   - Workspace templates
   - NixOS-specific language server configuration
@@ -209,6 +210,21 @@ sudo reboot
 ```
 
 **Note**: VS Code now uses an FHS environment - extensions can be installed normally through the marketplace!
+
+### **🔐 VS Code Extension Authentication**
+
+For extensions requiring login (Augment Code, GitHub Copilot, etc.):
+
+```bash
+# After deployment, extensions should authenticate normally
+# GNOME Keyring is enabled to store authentication tokens
+
+# If you encounter keyring issues, you can manage them with:
+seahorse  # GUI keyring manager (optional)
+
+# Or check keyring status:
+systemctl --user status gnome-keyring-daemon
+```
 
 ### **🔄 Auto-Update Management Commands**
 
