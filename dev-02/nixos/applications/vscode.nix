@@ -37,7 +37,6 @@
         {
           name = "augment";
           publisher = "augment";
-          version = "1.0.0";
           sha256 = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
         }
         {
