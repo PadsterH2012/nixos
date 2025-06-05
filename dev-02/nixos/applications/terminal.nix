@@ -43,169 +43,57 @@
     ncdu
   ];
 
-  # Configure Bash globally using environment variables and files
-  programs.bash = {
-    enable = true;
+  # Global shell aliases using environment.shellAliases
+  environment.shellAliases = {
+    # Basic commands
+    ll = "ls -la";
+    la = "ls -A";
+    l = "ls -CF";
 
-    # Global aliases
-    shellAliases = {
-      # Basic commands
-      ll = "ls -la";
-      la = "ls -A";
-      l = "ls -CF";
+    # Enhanced tools (fallback to standard tools if enhanced not available)
+    grep = "grep --color=auto";
 
-      # Enhanced tools (fallback to standard tools if enhanced not available)
-      grep = "grep --color=auto";
+    # Git shortcuts
+    g = "git";
+    gs = "git status";
+    ga = "git add";
+    gc = "git commit";
+    gp = "git push";
+    gl = "git pull";
+    gd = "git diff";
+    gb = "git branch";
+    gco = "git checkout";
 
-      # Git shortcuts
-      g = "git";
-      gs = "git status";
-      ga = "git add";
-      gc = "git commit";
-      gp = "git push";
-      gl = "git pull";
-      gd = "git diff";
-      gb = "git branch";
-      gco = "git checkout";
+    # NixOS shortcuts
+    rebuild = "sudo nixos-rebuild switch";
+    test-rebuild = "sudo nixos-rebuild test";
+    update = "sudo nixos-rebuild switch --upgrade";
+    rollback = "sudo nixos-rebuild switch --rollback";
+    generations = "sudo nix-env --list-generations --profile /nix/var/nix/profiles/system";
 
-      # NixOS shortcuts
-      rebuild = "sudo nixos-rebuild switch";
-      test-rebuild = "sudo nixos-rebuild test";
-      update = "sudo nixos-rebuild switch --upgrade";
-      rollback = "sudo nixos-rebuild switch --rollback";
-      generations = "sudo nix-env --list-generations --profile /nix/var/nix/profiles/system";
+    # Docker shortcuts
+    d = "docker";
+    dc = "docker-compose";
+    dps = "docker ps";
+    di = "docker images";
 
-      # Docker shortcuts
-      d = "docker";
-      dc = "docker-compose";
-      dps = "docker ps";
-      di = "docker images";
+    # System shortcuts
+    ports = "netstat -tuln";
+    processes = "ps aux";
+    disk = "df -h";
+    memory = "free -h";
 
-      # System shortcuts
-      ports = "netstat -tuln";
-      processes = "ps aux";
-      disk = "df -h";
-      memory = "free -h";
+    # Development shortcuts
+    serve = "python3 -m http.server";
+    myip = "curl -s https://ipinfo.io/ip";
 
-      # Development shortcuts
-      serve = "python3 -m http.server";
-      myip = "curl -s https://ipinfo.io/ip";
-
-      # Safety aliases
-      rm = "rm -i";
-      cp = "cp -i";
-      mv = "mv -i";
-    };
+    # Safety aliases
+    rm = "rm -i";
+    cp = "cp -i";
+    mv = "mv -i";
   };
 
-  # Create custom bashrc configuration file
-  environment.etc."bashrc.local" = {
-    text = ''
-      # Custom prompt with Git branch
-      parse_git_branch() {
-        git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
-      }
 
-      # Colorful prompt
-      PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[01;31m\]$(parse_git_branch)\[\033[00m\]\$ '
-
-      # History settings
-      export HISTSIZE=10000
-      export HISTFILESIZE=20000
-      export HISTCONTROL=ignoredups:erasedups
-      shopt -s histappend
-
-      # Environment variables
-      export EDITOR=code
-      export BROWSER=firefox
-      export PAGER=less
-
-      # Development environment
-      export NODE_ENV=development
-
-      # NixOS specific
-      export NIX_PATH="nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos:nixos-config=/etc/nixos/configuration.nix:/nix/var/nix/profiles/per-user/root/channels"
-
-      # FZF configuration
-      export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
-      export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-
-      # Colored man pages
-      export LESS_TERMCAP_mb=$'\e[1;32m'
-      export LESS_TERMCAP_md=$'\e[1;32m'
-      export LESS_TERMCAP_me=$'\e[0m'
-      export LESS_TERMCAP_se=$'\e[0m'
-      export LESS_TERMCAP_so=$'\e[01;33m'
-      export LESS_TERMCAP_ue=$'\e[0m'
-      export LESS_TERMCAP_us=$'\e[1;4;31m'
-
-      # Auto-completion
-      if [ -f /run/current-system/sw/share/bash-completion/bash_completion ]; then
-        . /run/current-system/sw/share/bash-completion/bash_completion
-      fi
-
-      # Custom functions
-      mkcd() {
-        mkdir -p "$1" && cd "$1"
-      }
-
-      extract() {
-        if [ -f $1 ] ; then
-          case $1 in
-            *.tar.bz2)   tar xjf $1     ;;
-            *.tar.gz)    tar xzf $1     ;;
-            *.bz2)       bunzip2 $1     ;;
-            *.rar)       unrar e $1     ;;
-            *.gz)        gunzip $1      ;;
-            *.tar)       tar xf $1      ;;
-            *.tbz2)      tar xjf $1     ;;
-            *.tgz)       tar xzf $1     ;;
-            *.zip)       unzip $1       ;;
-            *.Z)         uncompress $1  ;;
-            *.7z)        7z x $1        ;;
-            *)     echo "'$1' cannot be extracted via extract()" ;;
-          esac
-        else
-          echo "'$1' is not a valid file"
-        fi
-      }
-
-      # NixOS helper functions
-      nix-search() {
-        nix-env -qaP | grep -i "$1"
-      }
-
-      nix-info() {
-        nix-env -qa --description | grep -i "$1"
-      }
-
-      # Development helpers
-      port-kill() {
-        if [ $# -eq 0 ]; then
-          echo "Usage: port-kill <port>"
-          return 1
-        fi
-        lsof -ti:$1 | xargs kill -9
-      }
-
-      # Git helpers
-      git-clean-branches() {
-        git branch --merged | grep -v "\*\|main\|master\|develop" | xargs -n 1 git branch -d
-      }
-
-      # Docker helpers
-      docker-clean() {
-        docker system prune -af
-        docker volume prune -f
-      }
-
-      # Welcome message
-      echo "🚀 NixOS Development Environment Ready!"
-      echo "💡 Type 'rebuild' to apply configuration changes"
-      echo "📚 Type 'aliases' to see available shortcuts"
-    '';
-    mode = "0644";
-  };
 
   # Environment variables for all users
   environment.variables = {
@@ -305,10 +193,12 @@ EOF
     mode = "0755";
   };
 
-  # Configure tmux
-  programs.tmux = {
-    enable = true;
-    extraConfig = ''
+  # Enable tmux
+  programs.tmux.enable = true;
+
+  # Create tmux configuration file
+  environment.etc."tmux.conf" = {
+    text = ''
       # Set prefix to Ctrl-a
       set -g prefix C-a
       unbind C-b
@@ -339,5 +229,6 @@ EOF
       set -g status-left '#[fg=green]#H'
       set -g status-right '#[fg=yellow]#(uptime | cut -d "," -f 1)'
     '';
+    mode = "0644";
   };
 }

@@ -109,6 +109,12 @@ setup_applications() {
         info "Setting up Git configuration..."
         bash /etc/git/setup-user-git.sh || warning "Git setup encountered issues"
     fi
+
+    # Terminal setup
+    if [[ -f "/etc/terminal/setup-user-terminal.sh" ]]; then
+        info "Setting up terminal configuration..."
+        bash /etc/terminal/setup-user-terminal.sh || warning "Terminal setup encountered issues"
+    fi
     
     # Create desktop shortcuts
     if [[ -d "/etc/skel/Desktop" ]]; then
