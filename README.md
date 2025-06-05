@@ -116,14 +116,14 @@ curl -o /tmp/config.nix https://raw.githubusercontent.com/PadsterH2012/nixos/ref
   - Helper functions for development workflow
 
 ### 🔧 **VS Code Application** (`applications/vscode.nix`)
-- **Purpose**: Declarative VS Code installation with extensions and configuration
+- **Purpose**: VS Code installation with FHS environment for extension compatibility
 - **Key Features**:
-  - **Declarative extension installation** - extensions installed automatically via Nix
+  - **FHS environment** - allows normal extension installation through marketplace
   - Pre-configured settings for development
   - Workspace templates
   - NixOS-specific language server configuration
   - Desktop shortcuts and file associations
-  - Extension verification script
+  - Recommended extension installation script
 
 ## 🚀 Complete Deployment Commands
 
@@ -198,8 +198,8 @@ sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
 After successful deployment, run these commands on the target machine:
 
 ```bash
-# Verify VS Code extensions are installed (optional)
-sudo /etc/vscode/verify-extensions.sh
+# Install recommended VS Code extensions (optional)
+/etc/vscode/install-recommended-extensions.sh
 
 # Set up user terminal configuration
 sudo /etc/terminal/setup-user-terminal.sh
@@ -208,7 +208,7 @@ sudo /etc/terminal/setup-user-terminal.sh
 sudo reboot
 ```
 
-**Note**: VS Code extensions are now installed **declaratively** via NixOS configuration - no manual installation needed!
+**Note**: VS Code now uses an FHS environment - extensions can be installed normally through the marketplace!
 
 ### **🔄 Auto-Update Management Commands**
 
