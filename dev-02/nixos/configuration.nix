@@ -8,18 +8,23 @@
   imports = [
     # Include the results of the hardware scan
     /etc/nixos/hardware-configuration.nix
-    
+
     # Custom modules
     ./modules/hardware.nix
     ./modules/networking.nix
     ./modules/localization.nix
     ./modules/desktop.nix
     ./modules/development.nix
-    
+
     # Services
     ./services/audio.nix
     ./services/nfs.nix
     ./services/remote-access.nix
+
+    # Application configurations
+    ./applications/vscode.nix
+    ./applications/git.nix
+    ./applications/terminal.nix
   ];
 
   # Define a user account. Don't forget to set a password with 'passwd'.
