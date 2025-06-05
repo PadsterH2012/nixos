@@ -27,12 +27,12 @@
   # Desktop-specific packages optimized for development and ultrawide use
   environment.systemPackages = with pkgs; [
     # Essential desktop components
-    gnome.file-roller
-    gnome.eog  # Image viewer
-    gnome.evince  # PDF viewer
+    file-roller
+    eog  # Image viewer
+    evince  # PDF viewer
 
     # Terminal options
-    gnome.gnome-terminal
+    gnome-terminal
 
     # Network tools
     networkmanagerapplet

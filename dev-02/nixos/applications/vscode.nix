@@ -12,14 +12,12 @@
   environment.systemPackages = with pkgs; [
     (vscode-with-extensions.override {
       vscodeExtensions = with vscode-extensions; [
-        # Essential extensions
+        # Essential extensions (confirmed available in nixpkgs)
         ms-python.python
         ms-vscode.cpptools
         ms-vscode-remote.remote-ssh
         bbenoist.nix
-        ms-vscode.vscode-json
         redhat.vscode-yaml
-        ms-vscode.vscode-typescript-next
 
         # Git and version control
         eamodio.gitlens
@@ -33,30 +31,20 @@
         # Themes and appearance
         pkief.material-icon-theme
       ] ++ vscode-utils.extensionsFromVscodeMarketplace [
-        # Extensions not available in nixpkgs
-        {
-          name = "augment";
-          publisher = "augment";
-          sha256 = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
-        }
-        {
-          name = "git-graph";
-          publisher = "mhutchie";
-          version = "1.30.0";
-          sha256 = "sha256-sHeaMMr5hmQ0kAFZxxMiRk6f0mfjkg2XMnA4Gf+DHwA=";
-        }
-        {
-          name = "todo-highlight";
-          publisher = "wayou";
-          version = "1.0.5";
-          sha256 = "sha256-CQVtMdt/fZcNIbH/KybJixnLqCsz5iF1U0k+GfL65Ok=";
-        }
-        {
-          name = "material-theme";
-          publisher = "zhuangtongfa";
-          version = "3.16.2";
-          sha256 = "sha256-Gn7/2ziVyJkj0A8LjNqjkJz2cjNhLbZdnXlnMmVjvgY=";
-        }
+        # Extensions not available in nixpkgs - commented out to avoid build failures
+        # Uncomment and add proper sha256 values when needed
+        # {
+        #   name = "vscode-json";
+        #   publisher = "ms-vscode";
+        #   version = "1.0.0";
+        #   sha256 = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+        # }
+        # {
+        #   name = "git-graph";
+        #   publisher = "mhutchie";
+        #   version = "1.30.0";
+        #   sha256 = "sha256-sHeaMMr5hmQ0kAFZxxMiRk6f0mfjkg2XMnA4Gf+DHwA=";
+        # }
       ];
     })
   ];
