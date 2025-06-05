@@ -81,15 +81,15 @@
       echo "Starting Cinnamon desktop components..."
 
       # Start the panel if it's not running
-      if ! pgrep -f "cinnamon-panel" > /dev/null; then
-        echo "Starting Cinnamon panel..."
-        ${pkgs.cinnamon-desktop}/bin/cinnamon &
+      if ! pgrep -f "cinnamon" > /dev/null; then
+        echo "Starting Cinnamon desktop..."
+        cinnamon --replace &
       fi
 
       # Start the settings daemon if it's not running
       if ! pgrep -f "cinnamon-settings-daemon" > /dev/null; then
         echo "Starting Cinnamon settings daemon..."
-        ${pkgs.cinnamon-settings-daemon}/bin/cinnamon-settings-daemon &
+        cinnamon-settings-daemon &
       fi
 
       echo "Desktop components started. You should now see the taskbar and menu."
