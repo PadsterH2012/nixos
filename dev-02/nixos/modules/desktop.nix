@@ -152,4 +152,20 @@
     '';
     mode = "0644";
   };
+
+  environment.etc."skel/Desktop/MongoDB Compass.desktop" = {
+    text = ''
+      [Desktop Entry]
+      Version=1.0
+      Type=Application
+      Name=MongoDB Compass
+      Comment=GUI for MongoDB
+      Exec=mongodb-compass
+      Icon=mongodb-compass
+      Terminal=false
+      Categories=Development;Database;
+      StartupNotify=true
+    '';
+    mode = "0644";
+  };
 }

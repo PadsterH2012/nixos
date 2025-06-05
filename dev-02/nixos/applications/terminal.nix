@@ -91,6 +91,9 @@
     chrome = "google-chrome";
     firefox = "firefox";
 
+    # Database tools
+    compass = "mongodb-compass";
+
     # Safety aliases
     rm = "rm -i";
     cp = "cp -i";

@@ -22,6 +22,9 @@
     python3Packages.pip
     docker
     docker-compose
+
+    # Database tools
+    mongodb-compass
     
     # Essential system utilities
     htop

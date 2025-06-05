@@ -76,6 +76,7 @@ curl -o /tmp/config.nix https://raw.githubusercontent.com/PadsterH2012/nixos/ref
 - **Key Features**:
   - Core development tools: VS Code, Git, Node.js, Python3, GCC
   - Docker with auto-pruning enabled
+  - Database tools: MongoDB Compass
   - System utilities: htop, tree, zip/unzip
   - NFS utilities for network drives
   - Proxmox/VM utilities (qemu-utils, spice-vdagent)
@@ -177,7 +178,7 @@ sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
 | Component | Provides |
 |-----------|----------|
 | **Desktop** | Cinnamon desktop, fonts, display tools, XRDP compatibility |
-| **Development** | VS Code, Git, Docker, Node.js, Python, build tools |
+| **Development** | VS Code, Git, Docker, Node.js, Python, MongoDB Compass, build tools |
 | **Remote Access** | SSH + XRDP for remote desktop connections |
 | **Terminal** | Modern CLI tools, aliases, tmux, development shortcuts |
 | **VS Code** | Pre-configured IDE with extensions and settings |
@@ -209,6 +210,7 @@ sudo reboot
 - ✅ Modern terminal tools (eza, bat, ripgrep, fzf)
 - ✅ Git with helpful aliases and shortcuts
 - ✅ Web browsers: Firefox and Google Chrome
+- ✅ Database management: MongoDB Compass
 
 ### **Remote Access**
 - ✅ SSH for command-line access
