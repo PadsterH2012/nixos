@@ -143,6 +143,7 @@
 
   # Enable NFS client support for mapped drives
   services.rpcbind.enable = true;
+  services.nfs.server.enable = false;  # We only want client, not server
   boot.supportedFilesystems = [ "nfs" ];
   
   # Example NFS mount configuration (commented out - user can customize)
@@ -173,6 +174,21 @@
     enable = true;
     defaultWindowManager = "mate-session";
     openFirewall = true;
+  };
+  
+  # Fix XRDP session issues - ensure proper environment
+  environment.etc."xrdp/startwm.sh" = {
+    text = ''
+      #!/bin/sh
+      if [ -r /etc/default/locale ]; then
+        . /etc/default/locale
+        export LANG LANGUAGE LC_ALL LC_CTYPE
+      fi
+      
+      # Start MATE session properly
+      exec ${pkgs.mate.mate-session-manager}/bin/mate-session
+    '';
+    mode = "0755";
   };
 
   # Configure firewall for development needs
