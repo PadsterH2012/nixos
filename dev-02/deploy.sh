@@ -100,7 +100,7 @@ echo ""
 
 # Ask for confirmation
 read -p "🚀 Ready to deploy? This will rebuild your NixOS system. Continue? (y/N): " -n 1 -r
-echo ""
+# echo ""
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     echo "❌ Deployment cancelled"
     exit 1
