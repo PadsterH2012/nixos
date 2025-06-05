@@ -26,15 +26,6 @@
 
   # Desktop-specific packages optimized for development and ultrawide use
   environment.systemPackages = with pkgs; [
-    # Complete Cinnamon desktop suite
-    cinnamon.nemo
-    cinnamon.cinnamon-settings-daemon
-    cinnamon.cinnamon-session
-    cinnamon.cinnamon-desktop
-    cinnamon.cinnamon-common
-    cinnamon.cinnamon-control-center
-    cinnamon.nemo-fileroller
-
     # Essential desktop components
     gnome.file-roller
     gnome.eog  # Image viewer
@@ -55,9 +46,6 @@
 
     # Development-friendly tools
     dconf-editor
-
-    # Menu and panel components
-    cinnamon.cinnamon-menus
   ];
 
   # Enable Cinnamon-specific services
@@ -95,13 +83,13 @@
       # Start the panel if it's not running
       if ! pgrep -f "cinnamon-panel" > /dev/null; then
         echo "Starting Cinnamon panel..."
-        ${pkgs.cinnamon.cinnamon}/bin/cinnamon &
+        ${pkgs.cinnamon-desktop}/bin/cinnamon &
       fi
 
       # Start the settings daemon if it's not running
       if ! pgrep -f "cinnamon-settings-daemon" > /dev/null; then
         echo "Starting Cinnamon settings daemon..."
-        ${pkgs.cinnamon.cinnamon-settings-daemon}/bin/cinnamon-settings-daemon &
+        ${pkgs.cinnamon-settings-daemon}/bin/cinnamon-settings-daemon &
       fi
 
       echo "Desktop components started. You should now see the taskbar and menu."

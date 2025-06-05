@@ -43,7 +43,7 @@
       fi
 
       # Start Cinnamon session with all components
-      exec ${pkgs.cinnamon.cinnamon-session}/bin/cinnamon-session
+      exec ${pkgs.cinnamon-session}/bin/cinnamon-session
     '';
     mode = "0755";
   };
