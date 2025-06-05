@@ -143,7 +143,6 @@
 
   # Enable NFS client support for mapped drives
   services.rpcbind.enable = true;
-  services.nfs.server.enable = false;  # We only want client, not server
   boot.supportedFilesystems = [ "nfs" ];
   
   # Example NFS mount configuration (commented out - user can customize)
