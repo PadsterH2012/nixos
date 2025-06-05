@@ -97,6 +97,15 @@ curl -o /tmp/config.nix https://raw.githubusercontent.com/PadsterH2012/nixos/ref
   - NFS v3 with read/write access
   - Automatic directory creation and permissions
 
+### 🔄 **Auto-Update Service** (`services/auto-update.nix`)
+- **Purpose**: Automatic system updates, reboots, and maintenance
+- **Key Features**:
+  - Daily automatic NixOS updates at 2:00 AM
+  - Automatic reboot for kernel/initrd changes (2:00-6:00 AM window)
+  - Weekly garbage collection and store optimization
+  - Docker cleanup and log maintenance
+  - Status monitoring and management aliases
+
 ### 💻 **Terminal Application** (`applications/terminal.nix`)
 - **Purpose**: Terminal tools, aliases, and shell configuration
 - **Key Features**:
@@ -182,7 +191,7 @@ sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
 | **Remote Access** | SSH + XRDP for remote desktop connections |
 | **Terminal** | Modern CLI tools, aliases, tmux, development shortcuts |
 | **VS Code** | Pre-configured IDE with extensions and settings |
-| **Services** | Audio, NFS mounts (network repository), networking |
+| **Services** | Audio, NFS mounts, auto-updates, remote access |
 
 ## 🔧 Post-Deployment Setup
 
@@ -200,6 +209,33 @@ sudo reboot
 ```
 
 **Note**: VS Code extensions are now installed **declaratively** via NixOS configuration - no manual installation needed!
+
+### **🔄 Auto-Update Management Commands**
+
+After deployment, you can manage automatic updates with these commands:
+
+```bash
+# Check auto-update status
+upgrade-status
+
+# View auto-update logs
+upgrade-logs
+
+# Force immediate update
+upgrade-now
+
+# Check maintenance status
+maintenance-status
+
+# Run maintenance now
+maintenance-now
+
+# Clean up system immediately
+cleanup-now
+
+# List system generations
+generations
+```
 
 ## 🌟 Features
 
@@ -224,6 +260,13 @@ sudo reboot
 - ✅ Tmux configuration with custom key bindings
 - ✅ NFS client for network drives
 - ✅ Automated setup scripts
+
+### **System Maintenance**
+- ✅ Automatic daily updates at 2:00 AM
+- ✅ Smart reboot scheduling (2:00-6:00 AM window)
+- ✅ Weekly garbage collection and optimization
+- ✅ Docker cleanup and log maintenance
+- ✅ System status monitoring commands
 
 ## 📚 Additional Resources
 

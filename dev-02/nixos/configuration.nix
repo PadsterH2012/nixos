@@ -20,6 +20,7 @@
     ./services/audio.nix
     ./services/nfs.nix
     ./services/remote-access.nix
+    ./services/auto-update.nix
 
     # Application configurations
     ./applications/vscode.nix
