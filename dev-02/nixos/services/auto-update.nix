@@ -150,13 +150,13 @@
     "upgrade-status" = "/etc/maintenance/check-auto-upgrade.sh";
     "upgrade-now" = "sudo nixos-rebuild switch --upgrade";
     "upgrade-logs" = "sudo journalctl -u nixos-upgrade.service -f";
-    
+
     # Maintenance commands
     "maintenance-now" = "sudo /etc/maintenance/auto-maintenance.sh";
     "maintenance-status" = "sudo systemctl status auto-maintenance.timer";
-    
+
     # System cleanup
     "cleanup-now" = "sudo nix-collect-garbage -d && sudo nix-store --optimise";
-    "generations" = "nixos-rebuild list-generations";
+    "list-generations" = "nixos-rebuild list-generations";
   };
 }

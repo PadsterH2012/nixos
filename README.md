@@ -234,7 +234,7 @@ maintenance-now
 cleanup-now
 
 # List system generations
-generations
+list-generations
 ```
 
 ## 🌟 Features
