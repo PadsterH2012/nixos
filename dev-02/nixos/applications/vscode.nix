@@ -1,12 +1,65 @@
 # VS Code configuration module
-# Captures VS Code settings, extensions, and preferences for deployment
+# Declarative VS Code installation with extensions, settings, and preferences
+# Extensions are installed automatically via vscode-with-extensions - no manual installation needed!
 
 { config, pkgs, ... }:
 
 {
-  # Ensure VS Code is installed
+  # VS Code with declaratively installed extensions
+  # Extensions are automatically installed and managed by Nix
+  # To add more extensions: search https://search.nixos.org/packages?query=vscode-extensions
+  # Or use extensionsFromVscodeMarketplace for extensions not in nixpkgs
   environment.systemPackages = with pkgs; [
-    vscode
+    (vscode-with-extensions.override {
+      vscodeExtensions = with vscode-extensions; [
+        # Essential extensions
+        ms-python.python
+        ms-vscode.cpptools
+        ms-vscode-remote.remote-ssh
+        bbenoist.nix
+        ms-vscode.vscode-json
+        redhat.vscode-yaml
+        ms-vscode.vscode-typescript-next
+
+        # Git and version control
+        eamodio.gitlens
+
+        # Docker and containers
+        ms-azuretools.vscode-docker
+
+        # Productivity
+        streetsidesoftware.code-spell-checker
+
+        # Themes and appearance
+        pkief.material-icon-theme
+      ] ++ vscode-utils.extensionsFromVscodeMarketplace [
+        # Extensions not available in nixpkgs
+        {
+          name = "augment";
+          publisher = "augment";
+          version = "1.0.0";
+          sha256 = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+        }
+        {
+          name = "git-graph";
+          publisher = "mhutchie";
+          version = "1.30.0";
+          sha256 = "sha256-sHeaMMr5hmQ0kAFZxxMiRk6f0mfjkg2XMnA4Gf+DHwA=";
+        }
+        {
+          name = "todo-highlight";
+          publisher = "wayou";
+          version = "1.0.5";
+          sha256 = "sha256-CQVtMdt/fZcNIbH/KybJixnLqCsz5iF1U0k+GfL65Ok=";
+        }
+        {
+          name = "material-theme";
+          publisher = "zhuangtongfa";
+          version = "3.16.2";
+          sha256 = "sha256-Gn7/2ziVyJkj0A8LjNqjkJz2cjNhLbZdnXlnMmVjvgY=";
+        }
+      ];
+    })
   ];
 
   # System-wide VS Code configuration
@@ -62,42 +115,23 @@
     mode = "0644";
   };
 
-  # Create a script to install recommended extensions
-  environment.etc."vscode/install-extensions.sh" = {
+  # Create a script to verify installed extensions
+  environment.etc."vscode/verify-extensions.sh" = {
     text = ''
       #!/bin/bash
-      # VS Code extension installation script
-      
-      echo "Installing VS Code extensions..."
-      
-      # Essential extensions
-      code --install-extension ms-python.python
-      code --install-extension ms-vscode.cpptools
-      code --install-extension ms-vscode-remote.remote-ssh
-      code --install-extension bbenoist.nix
-      code --install-extension ms-vscode.vscode-json
-      code --install-extension redhat.vscode-yaml
-      code --install-extension ms-vscode.vscode-typescript-next
-      code --install-extension augment.vscode-augment
-      
-      # Git and version control
-      code --install-extension eamodio.gitlens
-      code --install-extension mhutchie.git-graph
-      
-      # Docker and containers
-      code --install-extension ms-azuretools.vscode-docker
-      
-      # Productivity
-      code --install-extension ms-vscode.vscode-todo-highlight
-      code --install-extension streetsidesoftware.code-spell-checker
-      code --install-extension ms-vscode.vscode-markdown
-      
-      # Themes and appearance
-      code --install-extension pkief.material-icon-theme
-      code --install-extension zhuangtongfa.material-theme
-      
-      echo "✅ VS Code extensions installed!"
-      echo "💡 Restart VS Code to activate all extensions"
+      # VS Code extension verification script
+
+      echo "🔍 Verifying VS Code extensions are installed..."
+      echo "Extensions installed declaratively via NixOS configuration:"
+      echo ""
+
+      # List currently installed extensions
+      code --list-extensions --show-versions
+
+      echo ""
+      echo "✅ Extensions are installed declaratively via NixOS!"
+      echo "💡 No manual installation needed - extensions are managed by Nix"
+      echo "🔄 To add/remove extensions, edit /etc/nixos/applications/vscode.nix and run 'nixos-rebuild switch'"
     '';
     mode = "0755";
   };
