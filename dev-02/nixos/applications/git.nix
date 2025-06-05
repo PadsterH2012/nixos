@@ -12,8 +12,8 @@
     gh     # GitHub CLI
   ];
 
-  # Global Git configuration
-  environment.etc."gitconfig" = {
+  # Global Git configuration template
+  environment.etc."gitconfig.template" = {
     text = ''
       [user]
           name = Paddy
@@ -220,9 +220,9 @@
       # Git user setup script
       
       echo "🔧 Setting up Git configuration..."
-      
-      # Copy global gitconfig to user home
-      cp /etc/gitconfig ~/.gitconfig
+
+      # Copy global gitconfig template to user home
+      cp /etc/gitconfig.template ~/.gitconfig
       
       # Set global gitignore
       git config --global core.excludesfile /etc/gitignore_global

@@ -78,6 +78,7 @@
       code --install-extension ms-vscode.vscode-json
       code --install-extension redhat.vscode-yaml
       code --install-extension ms-vscode.vscode-typescript-next
+      code --install-extension augment.vscode-augment
       
       # Git and version control
       code --install-extension eamodio.gitlens
