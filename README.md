@@ -116,9 +116,9 @@ curl -o /tmp/config.nix https://raw.githubusercontent.com/PadsterH2012/nixos/ref
   - Helper functions for development workflow
 
 ### 🔧 **VS Code Application** (`applications/vscode.nix`)
-- **Purpose**: VS Code installation with FHS environment for extension compatibility
+- **Purpose**: VS Code installation with OAuth authentication compatibility
 - **Key Features**:
-  - **FHS environment** - allows normal extension installation through marketplace
+  - **Regular VS Code environment** - better OAuth callback support for extensions
   - **GNOME Keyring integration** - enables extension authentication (login tokens)
   - Pre-configured settings for development
   - Workspace templates
@@ -209,7 +209,7 @@ sudo /etc/terminal/setup-user-terminal.sh
 sudo reboot
 ```
 
-**Note**: VS Code now uses an FHS environment - extensions can be installed normally through the marketplace!
+**Note**: VS Code uses regular environment for better OAuth compatibility - extensions can be installed normally through the marketplace!
 
 ### **🔐 VS Code Extension Authentication**
 
