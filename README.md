@@ -87,6 +87,14 @@ curl -o /tmp/config.nix https://raw.githubusercontent.com/PadsterH2012/nixos/ref
   - Optimized XRDP configuration for desktop environment
   - Firewall rules automatically configured
 
+### 📁 **NFS Service** (`services/nfs.nix`)
+- **Purpose**: Network File System client for accessing shared repositories
+- **Key Features**:
+  - Automatic mounting of network development repository
+  - Mount point: `/mnt/network_repo` → `10.202.28.4:/Project_Repositories`
+  - NFS v3 with read/write access
+  - Automatic directory creation and permissions
+
 ### 💻 **Terminal Application** (`applications/terminal.nix`)
 - **Purpose**: Terminal tools, aliases, and shell configuration
 - **Key Features**:
@@ -172,7 +180,7 @@ sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
 | **Remote Access** | SSH + XRDP for remote desktop connections |
 | **Terminal** | Modern CLI tools, aliases, tmux, development shortcuts |
 | **VS Code** | Pre-configured IDE with extensions and settings |
-| **Services** | Audio, NFS mounts, networking |
+| **Services** | Audio, NFS mounts (network repository), networking |
 
 ## 🔧 Post-Deployment Setup
 

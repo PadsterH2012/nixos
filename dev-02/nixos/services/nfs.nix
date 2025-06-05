@@ -1,5 +1,6 @@
 # NFS client configuration module
 # Network File System client support for mapped drives
+# Includes automatic mounting of network development repository
 
 { config, pkgs, ... }:
 
@@ -8,10 +9,17 @@
   services.rpcbind.enable = true;
   services.nfs.server.enable = false;  # We only want client, not server
   
-  # Example NFS mount configuration (commented out - user can customize)
-  # fileSystems."/mnt/nfs-share" = {
-  #   device = "nfs-server:/path/to/share";
-  #   fsType = "nfs";
-  #   options = [ "rw" "hard" "intr" "rsize=8192" "wsize=8192" "timeo=14" ];
-  # };
+  # Network Dev Repository NFS mount
+  fileSystems."/mnt/network_repo" = {
+    device = "10.202.28.4:/Project_Repositories";
+    fsType = "nfs";
+    options = [ "rw" "hard" "vers=3" ];
+  };
+
+  # Ensure mount point directory exists
+  system.activationScripts.createNfsMountPoints = ''
+    mkdir -p /mnt/network_repo
+    chown root:root /mnt/network_repo
+    chmod 755 /mnt/network_repo
+  '';
 }
