@@ -11,12 +11,50 @@ This configuration is specifically designed for:
 - **Development workflow** with VS Code, Git, Docker, and terminal access
 - **Professional appearance** with modern, polished Cinnamon interface
 
-## Quick Deployment
+## 🚀 Quick Deployment (Recommended)
 
-To deploy this configuration directly from GitHub:
+**One-command deployment** using the automated script:
 
 ```bash
-curl -o /tmp/configuration.nix https://raw.githubusercontent.com/PadsterH2012/nixos/refs/heads/main/dev-02/nixos/configuration.nix && sudo nixos-rebuild switch -I nixos-config=/tmp/configuration.nix
+curl -s https://raw.githubusercontent.com/PadsterH2012/nixos/refs/heads/main/dev-02/deploy.sh | bash
+```
+
+This script will:
+- ✅ Backup your existing configuration
+- ✅ Download all required files
+- ✅ Verify the installation
+- ✅ Apply the configuration
+- ✅ Provide next steps
+
+### Alternative: Archive Download Method
+
+```bash
+# Download the entire dev-02 configuration
+cd /tmp && \
+curl -L https://github.com/PadsterH2012/nixos/archive/refs/heads/main.tar.gz | tar -xz && \
+sudo cp -r nixos-main/dev-02/nixos/* /etc/nixos/ && \
+sudo nixos-rebuild switch
+```
+
+### Alternative: Manual Download Method
+
+```bash
+# Create directories
+sudo mkdir -p /etc/nixos/modules /etc/nixos/services
+
+# Download all configuration files
+sudo curl -o /etc/nixos/configuration.nix https://raw.githubusercontent.com/PadsterH2012/nixos/refs/heads/main/dev-02/nixos/configuration.nix
+sudo curl -o /etc/nixos/modules/hardware.nix https://raw.githubusercontent.com/PadsterH2012/nixos/refs/heads/main/dev-02/nixos/modules/hardware.nix
+sudo curl -o /etc/nixos/modules/networking.nix https://raw.githubusercontent.com/PadsterH2012/nixos/refs/heads/main/dev-02/nixos/modules/networking.nix
+sudo curl -o /etc/nixos/modules/localization.nix https://raw.githubusercontent.com/PadsterH2012/nixos/refs/heads/main/dev-02/nixos/modules/localization.nix
+sudo curl -o /etc/nixos/modules/desktop.nix https://raw.githubusercontent.com/PadsterH2012/nixos/refs/heads/main/dev-02/nixos/modules/desktop.nix
+sudo curl -o /etc/nixos/modules/development.nix https://raw.githubusercontent.com/PadsterH2012/nixos/refs/heads/main/dev-02/nixos/modules/development.nix
+sudo curl -o /etc/nixos/services/audio.nix https://raw.githubusercontent.com/PadsterH2012/nixos/refs/heads/main/dev-02/nixos/services/audio.nix
+sudo curl -o /etc/nixos/services/nfs.nix https://raw.githubusercontent.com/PadsterH2012/nixos/refs/heads/main/dev-02/nixos/services/nfs.nix
+sudo curl -o /etc/nixos/services/remote-access.nix https://raw.githubusercontent.com/PadsterH2012/nixos/refs/heads/main/dev-02/nixos/services/remote-access.nix
+
+# Apply the configuration
+sudo nixos-rebuild switch
 ```
 
 ## Structure
