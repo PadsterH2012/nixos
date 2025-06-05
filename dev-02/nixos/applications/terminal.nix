@@ -7,7 +7,7 @@
   # Terminal packages
   environment.systemPackages = with pkgs; [
     # Terminal emulators
-    gnome.gnome-terminal
+    gnome-terminal
 
     # Shell utilities
     bash-completion
@@ -22,7 +22,7 @@
     ripgrep
     fd
     bat
-    exa
+    eza
 
     # Network tools
     curl
