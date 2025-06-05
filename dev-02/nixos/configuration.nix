@@ -1,6 +1,6 @@
 # Main NixOS configuration for development environment
-# Modular configuration based on dev-streamlined.nix
-# Features: lightweight XFCE desktop, terminal, SSH, Docker host, mapped NFS drives, XRDP access
+# Modular configuration with Cinnamon desktop environment
+# Features: Modern Cinnamon desktop, XRDP access, development tools, ultrawide monitor support
 
 { config, pkgs, ... }:
 

@@ -16,7 +16,7 @@ curl -o /tmp/configuration.nix https://raw.githubusercontent.com/PadsterH2012/ni
 nixos/
 ├── configuration.nix          # Main configuration file with imports
 ├── modules/                   # Custom modules directory
-│   ├── desktop.nix           # X11, MATE desktop, display manager
+│   ├── desktop.nix           # X11, XFCE desktop, display manager
 │   ├── development.nix       # Development tools, Docker, packages
 │   ├── hardware.nix          # Boot loader, kernel modules, Proxmox optimizations
 │   ├── localization.nix      # Time zone, locale, keyboard settings
@@ -29,7 +29,7 @@ nixos/
 
 ## Features
 
-- **Lightweight MATE Desktop Environment** with auto-login
+- **Lightweight XFCE Desktop Environment** (no auto-login for security)
 - **Development Tools**: VS Code, Git, Docker, Node.js, Python
 - **Remote Access**: SSH and XRDP support
 - **NFS Client Support** for mapped network drives
@@ -55,7 +55,7 @@ Each module can be independently modified or disabled by commenting out the impo
 ## User Account
 
 The configuration creates a user account named "paddy" with:
-- Auto-login enabled
+- Manual login required (no auto-login for security)
 - Docker group membership
 - NetworkManager and wheel group access
 - Firefox browser included

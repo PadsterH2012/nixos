@@ -10,10 +10,10 @@
   # Enable XRDP for remote desktop access
   services.xrdp = {
     enable = true;
-    defaultWindowManager = "mate-session";
+    defaultWindowManager = "xfce4-session";
     openFirewall = true;
   };
-  
+
   # Fix XRDP session issues - ensure proper environment
   environment.etc."xrdp/startwm.sh" = {
     text = ''
@@ -22,9 +22,9 @@
         . /etc/default/locale
         export LANG LANGUAGE LC_ALL LC_CTYPE
       fi
-      
-      # Start MATE session properly
-      exec ${pkgs.mate.mate-session-manager}/bin/mate-session
+
+      # Start XFCE session properly
+      exec ${pkgs.xfce.xfce4-session}/bin/xfce4-session
     '';
     mode = "0755";
   };

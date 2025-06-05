@@ -1,5 +1,5 @@
 # Desktop environment configuration module
-# X11, MATE desktop, display manager, and GUI-related settings
+# X11, XFCE desktop, display manager, and GUI-related settings
 
 { config, pkgs, ... }:
 
@@ -7,24 +7,20 @@
   # Enable the X11 windowing system.
   services.xserver.enable = true;
 
-  # Enable MATE Desktop Environment (lightweight alternative to GNOME)
-  services.xserver.desktopManager.mate.enable = true;
-  
-  # Configure LightDM with auto-login for user paddy
-  services.xserver.displayManager.lightdm = {
-    enable = true;
-    autoLogin = {
-      enable = true;
-      user = "paddy";
-    };
-  };
+  # Enable XFCE Desktop Environment (lightweight and stable)
+  services.xserver.desktopManager.xfce.enable = true;
+
+  # Configure LightDM display manager (no auto-login for security)
+  services.xserver.displayManager.lightdm.enable = true;
 
   # Desktop-specific packages
   environment.systemPackages = with pkgs; [
-    # MATE desktop essentials (streamlined)
-    mate.mate-terminal
-    mate.caja
-    
+    # XFCE desktop essentials
+    xfce.xfce4-terminal
+    xfce.thunar
+    xfce.xfce4-panel
+    xfce.xfce4-settings
+
     # Network tools
     networkmanagerapplet
   ];
