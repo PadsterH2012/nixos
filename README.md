@@ -56,7 +56,8 @@ curl -o /tmp/config.nix https://raw.githubusercontent.com/PadsterH2012/nixos/ref
 - **Purpose**: Entry point that imports all modules and defines the user account
 - **Key Features**:
   - Creates user "paddy" with admin privileges
-  - Enables unfree packages (for VS Code, etc.)
+  - Enables unfree packages (for VS Code, Chrome, etc.)
+  - Installs user applications (Firefox, Google Chrome)
   - Sets up printing services
   - Defines system state version (24.11)
 
@@ -207,6 +208,7 @@ sudo reboot
 - ✅ Docker with auto-pruning
 - ✅ Modern terminal tools (eza, bat, ripgrep, fzf)
 - ✅ Git with helpful aliases and shortcuts
+- ✅ Web browsers: Firefox and Google Chrome
 
 ### **Remote Access**
 - ✅ SSH for command-line access

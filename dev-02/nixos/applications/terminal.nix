@@ -87,6 +87,10 @@
     serve = "python3 -m http.server";
     myip = "curl -s https://ipinfo.io/ip";
 
+    # Browser shortcuts
+    chrome = "google-chrome";
+    firefox = "firefox";
+
     # Safety aliases
     rm = "rm -i";
     cp = "cp -i";

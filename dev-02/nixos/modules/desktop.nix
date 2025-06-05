@@ -135,4 +135,21 @@
     '';
     mode = "0644";
   };
+
+  environment.etc."skel/Desktop/Google Chrome.desktop" = {
+    text = ''
+      [Desktop Entry]
+      Version=1.0
+      Type=Application
+      Name=Google Chrome
+      Comment=Access the Internet
+      Exec=google-chrome
+      Icon=google-chrome
+      Terminal=false
+      Categories=Network;WebBrowser;
+      StartupNotify=true
+      MimeType=text/html;text/xml;application/xhtml+xml;application/xml;application/vnd.mozilla.xul+xml;application/rss+xml;application/rdf+xml;image/gif;image/jpeg;image/png;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/ftp;x-scheme-handler/chrome;video/webm;application/x-xpinstall;
+    '';
+    mode = "0644";
+  };
 }
