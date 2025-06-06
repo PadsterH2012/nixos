@@ -128,13 +128,13 @@ else
     print_status "PASS" "Shell aliases already exist"
 fi
 
-# Setup MCP servers
-print_status "INFO" "Setting up MCP servers..."
-if [ -f /etc/vscode/setup-global-mcp.sh ]; then
-    /etc/vscode/setup-global-mcp.sh
-    print_status "PASS" "MCP servers configured globally"
+# Setup Augment Code + MCP integration
+print_status "INFO" "Setting up Augment Code with MCP integration..."
+if [ -f /etc/vscode/setup-augment-mcp.sh ]; then
+    /etc/vscode/setup-augment-mcp.sh
+    print_status "PASS" "Augment Code + MCP integration configured"
 else
-    print_status "WARN" "MCP setup script not found - run 'sudo nixos-rebuild switch' first"
+    print_status "WARN" "Augment+MCP setup script not found - run 'sudo nixos-rebuild switch' first"
 fi
 
 # Create extension summary
