@@ -11,14 +11,36 @@
   # This provides libsecret access for authentication support in extensions like Augment Code
   # Extensions are installed to ~/.vscode/extensions (user-writable location)
   environment.systemPackages = with pkgs; [
-    vscode.fhs  # FHS environment for proper library access (OAuth compatibility)
+    # Try multiple VS Code variants for OAuth compatibility
+    (vscode.fhsWithPackages (ps: with ps; [
+      libsecret
+      pkg-config
+      glib
+      gtk3
+      dbus
+    ]))
     libsecret  # CRITICAL: Required for VS Code 1.81+ OAuth authentication
-    seahorse  # GUI for GNOME Keyring (fixed deprecated gnome.seahorse)
+    seahorse  # GUI for GNOME Keyring
+    pkg-config  # Required for libsecret detection
+    glib  # Required for keyring integration
+    dbus  # Required for desktop integration
   ];
 
   # Enable GNOME Keyring for VS Code authentication token storage
   # This is required for extensions like Augment Code, GitHub Copilot, etc.
   services.gnome.gnome-keyring.enable = true;
+
+  # Additional services for OAuth authentication
+  services.dbus.enable = true;
+  programs.dconf.enable = true;
+
+  # Environment variables for OAuth compatibility
+  environment.sessionVariables = {
+    # Force VS Code to use system keyring
+    ELECTRON_OZONE_PLATFORM_HINT = "auto";
+    # Enable OAuth debugging (optional)
+    # VSCODE_LOGS = "debug";
+  };
 
   # System-wide VS Code configuration
   environment.etc."vscode/settings.json" = {
@@ -123,7 +145,7 @@
     mode = "0755";
   };
 
-  # Create desktop shortcut for VS Code
+  # Create desktop shortcut for VS Code with OAuth support
   environment.etc."skel/Desktop/Visual Studio Code.desktop" = {
     text = ''
       [Desktop Entry]
@@ -131,12 +153,18 @@
       Type=Application
       Name=Visual Studio Code
       Comment=Code Editing. Redefined.
-      Exec=code
+      Exec=env ELECTRON_OZONE_PLATFORM_HINT=auto code %U
       Icon=vscode
       Terminal=false
       Categories=Development;IDE;
       StartupNotify=true
       MimeType=text/plain;inode/directory;x-scheme-handler/vscode;
+      Actions=new-empty-window;
+
+      [Desktop Action new-empty-window]
+      Name=New Empty Window
+      Exec=env ELECTRON_OZONE_PLATFORM_HINT=auto code --new-window %U
+      Icon=vscode
     '';
     mode = "0644";
   };
@@ -177,4 +205,13 @@
   };
 
   # Note: VS Code protocol handler registration is handled automatically by the desktop file
+
+  # Alternative: Enable Flatpak as fallback for OAuth issues
+  # Uncomment the following lines if native VS Code OAuth still doesn't work:
+  # services.flatpak.enable = true;
+  #
+  # Then install VS Code via Flatpak:
+  # flatpak install flathub com.visualstudio.code
+  #
+  # Flatpak VS Code typically has better OAuth support due to sandboxing
 }
