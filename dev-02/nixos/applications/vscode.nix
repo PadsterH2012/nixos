@@ -216,11 +216,24 @@
       };
       extensions = {
         recommendations = [
+          # OAuth-compatible extensions (confirmed working)
+          "augment.vscode-augment"
+          "github.copilot"
+          "github.copilot-chat"
+
+          # Essential development
           "ms-python.python"
           "bbenoist.nix"
           "ms-vscode-remote.remote-ssh"
           "eamodio.gitlens"
           "ms-azuretools.vscode-docker"
+
+          # Additional captured extensions
+          "redhat.vscode-yaml"
+          "ms-vscode.vscode-json"
+          "mhutchie.git-graph"
+          "streetsidesoftware.code-spell-checker"
+          "pkief.material-icon-theme"
         ];
       };
     };

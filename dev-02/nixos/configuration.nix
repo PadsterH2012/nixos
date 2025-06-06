@@ -24,6 +24,7 @@
 
     # Application configurations
     ./applications/vscode.nix
+    ./applications/vscode-extensions.nix
     ./applications/git.nix
     ./applications/terminal.nix
   ];
