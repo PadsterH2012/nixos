@@ -83,51 +83,10 @@
           echo -e "''${YELLOW}⚠️  Warning''${NC}: MCP setup script not found"
       fi
       
-      # 2. Create VS Code user settings with Augment preferences
-      echo -e "''${BLUE}⚙️  Creating user settings...''${NC}"
-      cat > "$VSCODE_CONFIG/settings.json" << 'EOF'
-{
-  "editor.fontSize": 14,
-  "editor.fontFamily": "'Source Code Pro', 'Droid Sans Mono', monospace",
-  "editor.tabSize": 2,
-  "editor.insertSpaces": true,
-  "editor.wordWrap": "on",
-  "editor.minimap.enabled": true,
-  "workbench.colorTheme": "Dark+ (default dark)",
-  "workbench.iconTheme": "vs-seti",
-  "terminal.integrated.fontSize": 14,
-  "files.autoSave": "afterDelay",
-  "files.autoSaveDelay": 1000,
-  "git.enableSmartCommit": true,
-  "git.confirmSync": false,
-  "augment.enableTelemetry": false,
-  "augment.enableAnalytics": false,
-  "augment.autoIndex": true,
-  "augment.mcpServers": {
-    "central-obsidian": {
-      "url": "http://10.202.28.111:9090/obsidian-mcp-tools/sse"
-    },
-    "central-rpg": {
-      "url": "http://10.202.28.111:9090/rpg-tools/sse"
-    },
-    "central-search": {
-      "url": "http://10.202.28.111:9090/brave-search/sse"
-    },
-    "central-memory": {
-      "url": "http://10.202.28.111:9090/memory/sse"
-    },
-    "central-mongodb": {
-      "url": "http://10.202.28.111:9090/mongodb/sse"
-    },
-    "central-context7": {
-      "url": "http://10.202.28.111:9090/Context7/sse"
-    },
-    "central-jenkins": {
-      "url": "http://10.202.28.111:9090/jenkins-mcp/sse"
-    }
-  }
-}
-EOF
+      # 2. Create VS Code user settings with Augment preferences (correct format)
+      echo -e "''${BLUE}⚙️  Creating user settings with Augment MCP integration...''${NC}"
+      cp /etc/vscode/settings.json "$VSCODE_CONFIG/settings.json"
+      echo "✅ User settings created with Augment MCP servers configured"
       
       # 3. Restore Augment settings if backup exists
       echo -e "''${BLUE}🔄 Checking for Augment settings backup...''${NC}"

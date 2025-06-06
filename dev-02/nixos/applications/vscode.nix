@@ -65,7 +65,7 @@
     };
   };
 
-  # System-wide VS Code configuration
+  # System-wide VS Code configuration with Augment MCP integration
   environment.etc."vscode/settings.json" = {
     text = builtins.toJSON {
       # Editor settings
@@ -76,43 +76,73 @@
       "editor.wordWrap" = "on";
       "editor.minimap.enabled" = true;
       "editor.rulers" = [ 80 120 ];
-      
+
       # Workbench settings
       "workbench.colorTheme" = "Dark+ (default dark)";
       "workbench.iconTheme" = "vs-seti";
       "workbench.startupEditor" = "newUntitledFile";
-      
+
       # Terminal settings
       "terminal.integrated.shell.linux" = "${pkgs.bash}/bin/bash";
       "terminal.integrated.fontSize" = 14;
       "terminal.integrated.cursorBlinking" = true;
-      
+
       # File settings
       "files.autoSave" = "afterDelay";
       "files.autoSaveDelay" = 1000;
       "files.trimTrailingWhitespace" = true;
       "files.insertFinalNewline" = true;
-      
+
       # Git settings
       "git.enableSmartCommit" = true;
       "git.confirmSync" = false;
       "git.autofetch" = true;
-      
+
       # Language-specific settings
       "python.defaultInterpreterPath" = "${pkgs.python3}/bin/python";
       "python.linting.enabled" = true;
       "python.linting.pylintEnabled" = true;
-      
+
       # NixOS specific
       "nix.enableLanguageServer" = true;
       "nix.serverPath" = "${pkgs.nil}/bin/nil";
-      
+
       # Docker settings
       "docker.showStartPage" = false;
-      
+
       # Remote development
       "remote.SSH.remotePlatform" = {
         "*" = "linux";
+      };
+
+      # Augment Code settings
+      "augment.enableTelemetry" = false;
+      "augment.enableAnalytics" = false;
+      "augment.autoIndex" = true;
+
+      # Augment MCP Servers (correct format based on research)
+      "augment.mcpServers" = {
+        "central-obsidian" = {
+          "url" = "http://10.202.28.111:9090/obsidian-mcp-tools/sse";
+        };
+        "central-rpg" = {
+          "url" = "http://10.202.28.111:9090/rpg-tools/sse";
+        };
+        "central-search" = {
+          "url" = "http://10.202.28.111:9090/brave-search/sse";
+        };
+        "central-memory" = {
+          "url" = "http://10.202.28.111:9090/memory/sse";
+        };
+        "central-mongodb" = {
+          "url" = "http://10.202.28.111:9090/mongodb/sse";
+        };
+        "central-context7" = {
+          "url" = "http://10.202.28.111:9090/Context7/sse";
+        };
+        "central-jenkins" = {
+          "url" = "http://10.202.28.111:9090/jenkins-mcp/sse";
+        };
       };
     };
     mode = "0644";
