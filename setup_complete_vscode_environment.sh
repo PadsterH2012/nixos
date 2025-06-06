@@ -128,6 +128,15 @@ else
     print_status "PASS" "Shell aliases already exist"
 fi
 
+# Setup MCP servers
+print_status "INFO" "Setting up MCP servers..."
+if [ -f /etc/vscode/setup-global-mcp.sh ]; then
+    /etc/vscode/setup-global-mcp.sh
+    print_status "PASS" "MCP servers configured globally"
+else
+    print_status "WARN" "MCP setup script not found - run 'sudo nixos-rebuild switch' first"
+fi
+
 # Create extension summary
 print_status "INFO" "Creating extension summary..."
 cat > ~/vscode-extensions-summary.txt << 'EOF'
@@ -171,6 +180,22 @@ Usage:
 
 OAuth Status: WORKING ✅
 Extensions Location: ~/.var/app/com.visualstudio.code/data/vscode/extensions/
+
+MCP Servers Configuration:
+==========================
+Proxy Server: 10.202.28.111:9090
+
+Available MCP Servers:
+- central-obsidian  - Obsidian notes management
+- central-rpg       - RPG tools and monsters
+- central-search    - Brave web search
+- central-memory    - Knowledge graph memory
+- central-mongodb   - MongoDB operations
+- central-context7  - Code context engine
+- central-jenkins   - Jenkins CI/CD
+
+MCP Config Location: ~/.var/app/com.visualstudio.code/config/Code/User/mcp.json
+Workspace Setup: Run '/etc/vscode/setup-mcp-servers.sh' in any workspace
 EOF
 
 print_status "PASS" "Complete VS Code environment setup finished!"
@@ -182,6 +207,7 @@ echo "✅ OAuth-compatible extensions installed (Augment Code, GitHub Copilot)"
 echo "✅ Development extensions installed"
 echo "✅ Desktop shortcuts created"
 echo "✅ Shell aliases configured"
+echo "✅ MCP servers configured (7 centralized servers)"
 echo "✅ Extension summary saved to ~/vscode-extensions-summary.txt"
 echo ""
 echo "🚀 NEXT STEPS"
