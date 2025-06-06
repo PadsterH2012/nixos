@@ -1,17 +1,17 @@
 # VS Code configuration module
-# VS Code installation with regular environment for OAuth compatibility
+# VS Code installation with FHS environment for OAuth compatibility
 # Extensions can be installed normally through the VS Code marketplace
 # Includes GNOME Keyring for authentication token storage (required for extension logins)
-# Note: Using regular vscode instead of vscode.fhs for better OAuth callback support
+# Note: Using vscode-fhs for proper libsecret access and OAuth callback support
 
 { config, pkgs, ... }:
 
 {
-  # VS Code with regular environment for better OAuth compatibility
-  # This provides better authentication support for extensions like Augment Code
+  # VS Code with FHS environment for proper library access and OAuth compatibility
+  # This provides libsecret access for authentication support in extensions like Augment Code
   # Extensions are installed to ~/.vscode/extensions (user-writable location)
   environment.systemPackages = with pkgs; [
-    vscode
+    vscode-fhs  # FHS environment for proper library access (OAuth compatibility)
     libsecret  # CRITICAL: Required for VS Code 1.81+ OAuth authentication
     gnome.seahorse  # GUI for GNOME Keyring (optional but helpful)
   ];
