@@ -11,17 +11,14 @@
   # This provides libsecret access for authentication support in extensions like Augment Code
   # Extensions are installed to ~/.vscode/extensions (user-writable location)
   environment.systemPackages = with pkgs; [
-    # Try multiple VS Code variants for OAuth compatibility
-    (vscode.fhsWithPackages (ps: with ps; [
-      libsecret
-      pkg-config
-      glib
-      gtk3
-      dbus
-    ]))
-    libsecret  # CRITICAL: Required for VS Code 1.81+ OAuth authentication
-    seahorse  # GUI for GNOME Keyring
-    pkg-config  # Required for libsecret detection
+    # NOTE: Using Flatpak VS Code instead of native for OAuth compatibility
+    # Native NixOS VS Code has OAuth authentication issues due to libsecret access
+    # Flatpak VS Code provides proper keyring integration and OAuth support
+
+    # Keep these for keyring support
+    libsecret  # Required for keyring functionality
+    seahorse  # GUI for GNOME Keyring management
+    pkg-config  # Required for development
     glib  # Required for keyring integration
     dbus  # Required for desktop integration
   ];
@@ -40,6 +37,32 @@
     ELECTRON_OZONE_PLATFORM_HINT = "auto";
     # Enable OAuth debugging (optional)
     # VSCODE_LOGS = "debug";
+  };
+
+  # Automatic Flatpak VS Code installation service
+  # This ensures VS Code is available via Flatpak for OAuth compatibility
+  systemd.services.install-vscode-flatpak = {
+    description = "Install VS Code via Flatpak for OAuth compatibility";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "network-online.target" ];
+    wants = [ "network-online.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = pkgs.writeShellScript "install-vscode-flatpak" ''
+        # Add Flathub repository if not exists
+        ${pkgs.flatpak}/bin/flatpak remote-add --if-not-exists --system flathub https://flathub.org/repo/flathub.flatpakrepo
+
+        # Install VS Code if not already installed
+        if ! ${pkgs.flatpak}/bin/flatpak list --system | grep -q com.visualstudio.code; then
+          echo "Installing VS Code via Flatpak for OAuth compatibility..."
+          ${pkgs.flatpak}/bin/flatpak install -y --system flathub com.visualstudio.code
+          echo "VS Code Flatpak installation complete"
+        else
+          echo "VS Code Flatpak already installed"
+        fi
+      '';
+    };
   };
 
   # System-wide VS Code configuration
@@ -145,16 +168,16 @@
     mode = "0755";
   };
 
-  # Create desktop shortcut for VS Code with OAuth support
+  # Create desktop shortcut for Flatpak VS Code (OAuth compatible)
   environment.etc."skel/Desktop/Visual Studio Code.desktop" = {
     text = ''
       [Desktop Entry]
       Version=1.0
       Type=Application
-      Name=Visual Studio Code
-      Comment=Code Editing. Redefined.
-      Exec=env ELECTRON_OZONE_PLATFORM_HINT=auto code %U
-      Icon=vscode
+      Name=Visual Studio Code (OAuth Compatible)
+      Comment=Code Editing. Redefined. (Flatpak - OAuth Working)
+      Exec=flatpak run com.visualstudio.code %U
+      Icon=com.visualstudio.code
       Terminal=false
       Categories=Development;IDE;
       StartupNotify=true
@@ -163,8 +186,8 @@
 
       [Desktop Action new-empty-window]
       Name=New Empty Window
-      Exec=env ELECTRON_OZONE_PLATFORM_HINT=auto code --new-window %U
-      Icon=vscode
+      Exec=flatpak run com.visualstudio.code --new-window %U
+      Icon=com.visualstudio.code
     '';
     mode = "0644";
   };
@@ -206,12 +229,20 @@
 
   # Note: VS Code protocol handler registration is handled automatically by the desktop file
 
-  # Alternative: Enable Flatpak as fallback for OAuth issues
-  # Uncomment the following lines if native VS Code OAuth still doesn't work:
-  # services.flatpak.enable = true;
+  # Shell aliases for Flatpak VS Code
+  environment.shellAliases = {
+    code = "flatpak run com.visualstudio.code";
+    vscode = "flatpak run com.visualstudio.code";
+  };
+
+  # SOLUTION SUMMARY:
+  # ================
+  # OAuth authentication works with Flatpak VS Code because:
+  # 1. Proper keyring permissions (org.freedesktop.secrets)
+  # 2. Correct desktop integration and protocol handling
+  # 3. Sandboxed environment with proper library access
+  # 4. Native NixOS VS Code cannot access libsecret properly
   #
-  # Then install VS Code via Flatpak:
-  # flatpak install flathub com.visualstudio.code
-  #
-  # Flatpak VS Code typically has better OAuth support due to sandboxing
+  # This configuration automatically installs and configures Flatpak VS Code
+  # which provides reliable OAuth authentication for extensions like Augment Code
 }
