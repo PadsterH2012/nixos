@@ -84,6 +84,9 @@
   security.pam.services.login.enableGnomeKeyring = true;
   security.pam.services.su.enableGnomeKeyring = true;
 
+  # Enable Flatpak for better application compatibility (especially OAuth)
+  services.flatpak.enable = true;
+
   # Create a desktop startup script for troubleshooting
   environment.etc."xrdp/start-cinnamon-desktop.sh" = {
     text = ''
