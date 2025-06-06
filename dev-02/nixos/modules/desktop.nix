@@ -41,6 +41,9 @@
     arandr
     autorandr
 
+    # XDG utilities for proper desktop integration and protocol handling
+    xdg-utils
+
     # System utilities
     pavucontrol
 
