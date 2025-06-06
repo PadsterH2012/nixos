@@ -128,6 +128,7 @@
       Terminal=false
       Categories=Development;IDE;
       StartupNotify=true
+      MimeType=x-scheme-handler/vscode;
     '';
     mode = "0644";
   };

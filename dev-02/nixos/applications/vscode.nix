@@ -12,6 +12,7 @@
   # Extensions are installed to ~/.vscode/extensions (user-writable location)
   environment.systemPackages = with pkgs; [
     vscode
+    libsecret  # CRITICAL: Required for VS Code 1.81+ OAuth authentication
     gnome.seahorse  # GUI for GNOME Keyring (optional but helpful)
   ];
 
@@ -135,7 +136,7 @@
       Terminal=false
       Categories=Development;IDE;
       StartupNotify=true
-      MimeType=text/plain;inode/directory;
+      MimeType=text/plain;inode/directory;x-scheme-handler/vscode;
     '';
     mode = "0644";
   };
