@@ -75,6 +75,15 @@
   # Ensure proper session management
   security.polkit.enable = true;
 
+  # Configure PAM to automatically unlock GNOME keyring on login
+  # This prevents the "Unlock Login Keyring" dialog in VS Code and other apps
+  security.pam.services.lightdm.enableGnomeKeyring = true;
+  security.pam.services.lightdm-greeter.enableGnomeKeyring = true;
+
+  # Also enable for other common login services
+  security.pam.services.login.enableGnomeKeyring = true;
+  security.pam.services.su.enableGnomeKeyring = true;
+
   # Create a desktop startup script for troubleshooting
   environment.etc."xrdp/start-cinnamon-desktop.sh" = {
     text = ''
