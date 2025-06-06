@@ -175,8 +175,5 @@
     mode = "0644";
   };
 
-  # Ensure vscode protocol handler is registered
-  xdg.mimeApps.defaultApplications = {
-    "x-scheme-handler/vscode" = [ "code.desktop" ];
-  };
+  # Note: VS Code protocol handler registration is handled automatically by the desktop file
 }
