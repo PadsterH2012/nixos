@@ -46,6 +46,9 @@
   # Allow unfree packages (needed for VS Code)
   nixpkgs.config.allowUnfree = true;
 
+  # Enable nix-ld for compatibility with unpatched dynamic binaries (e.g., some VS Code extensions)
+  programs.nix-ld.enable = true;
+
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
