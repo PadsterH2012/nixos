@@ -11,9 +11,9 @@
   # This provides libsecret access for authentication support in extensions like Augment Code
   # Extensions are installed to ~/.vscode/extensions (user-writable location)
   environment.systemPackages = with pkgs; [
-    vscode-fhs  # FHS environment for proper library access (OAuth compatibility)
+    vscode.fhs  # FHS environment for proper library access (OAuth compatibility)
     libsecret  # CRITICAL: Required for VS Code 1.81+ OAuth authentication
-    gnome.seahorse  # GUI for GNOME Keyring (optional but helpful)
+    seahorse  # GUI for GNOME Keyring (fixed deprecated gnome.seahorse)
   ];
 
   # Enable GNOME Keyring for VS Code authentication token storage
