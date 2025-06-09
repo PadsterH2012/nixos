@@ -4,8 +4,18 @@
 # Can be run via: curl -sSL https://raw.githubusercontent.com/PadsterH2012/nixos/main/nixos-dev-test.sh | bash
 # Or with options: curl -sSL https://raw.githubusercontent.com/PadsterH2012/nixos/main/nixos-dev-test.sh | bash -s -- --node --docker --all
 
-VERSION="1.0.0"
+VERSION="1.0.1"
 SCRIPT_NAME="NixOS Dev Environment Tester"
+
+# Debug mode (set to true for troubleshooting)
+DEBUG=${DEBUG:-false}
+
+# Helper functions (defined early)
+debug_log() {
+    if [[ "$DEBUG" == "true" ]]; then
+        echo -e "${YELLOW}[DEBUG]${NC} $1" >&2
+    fi
+}
 
 # Color codes for output
 RED='\033[0;31m'
@@ -38,7 +48,7 @@ CHANGE_HOSTNAME=false
 
 # Show interactive menu if no arguments provided
 show_menu() {
-    clear
+    echo
     echo -e "${PURPLE}╔══════════════════════════════════════════════════════════════╗${NC}"
     echo -e "${PURPLE}║                                                              ║${NC}"
     echo -e "${PURPLE}║           ${BLUE}$SCRIPT_NAME v$VERSION${PURPLE}           ║${NC}"
@@ -82,9 +92,27 @@ if [[ $# -eq 0 ]]; then
         TEST_BASIC=true
     else
         # Interactive mode
+        debug_log "Starting interactive mode"
+        debug_log "TTY check: $(tty 2>/dev/null || echo 'No TTY')"
+        debug_log "TERM: ${TERM:-'Not set'}"
+
+        echo -e "${INFO} Starting interactive mode..."
         while true; do
+            debug_log "Showing menu"
             show_menu
-            read -r choice
+
+            debug_log "Waiting for user input..."
+            # Use read with timeout to prevent hanging
+            if read -t 30 -r choice; then
+                debug_log "User input received: '$choice'"
+                echo # Add newline after input
+            else
+                echo
+                echo -e "${RED}Input timeout or error. Exiting...${NC}"
+                debug_log "Read timeout or error occurred"
+                exit 1
+            fi
+
         case $choice in
             1)
                 TEST_BASIC=true
@@ -311,33 +339,75 @@ test_basic() {
 
 test_node() {
     print_section "${PACKAGE} Node.js Environment"
-    
+
+    # Check standard locations first
     check_command "node" "Node.js"
     check_command "npm" "npm"
     check_command "npx" "npx"
-    
-    # Test Node.js execution
+
+    # If not found in PATH, check common NixOS locations
+    if ! command -v node >/dev/null 2>&1; then
+        echo -e "   ${WARNING} Node.js not in PATH, checking NixOS locations..."
+
+        # Common NixOS paths
+        local nixos_paths=(
+            "/run/current-system/sw/bin/node"
+            "/nix/var/nix/profiles/default/bin/node"
+            "/home/$USER/.nix-profile/bin/node"
+        )
+
+        for path in "${nixos_paths[@]}"; do
+            if [ -x "$path" ]; then
+                echo -e "   ${CHECK} Found Node.js at: $path"
+                local version=$($path --version 2>/dev/null || echo "Unknown")
+                echo -e "      Version: $version"
+                echo -e "   ${INFO} To fix PATH, add to your shell profile:"
+                echo -e "      ${CYAN}export PATH=\"$(dirname $path):\$PATH\"${NC}"
+                break
+            fi
+        done
+    fi
+
+    # Test Node.js execution if available
+    local node_cmd=""
     if command -v node >/dev/null 2>&1; then
+        node_cmd="node"
+    elif [ -x "/run/current-system/sw/bin/node" ]; then
+        node_cmd="/run/current-system/sw/bin/node"
+    fi
+
+    if [ -n "$node_cmd" ]; then
         echo -e "   ${INFO} Testing Node.js execution:"
-        local test_result=$(node -e "console.log('Node.js is working!')" 2>&1)
+        local test_result=$($node_cmd -e "console.log('Node.js is working!')" 2>&1)
         if [[ $? -eq 0 ]]; then
             echo -e "      ${CHECK} $test_result"
         else
             echo -e "      ${CROSS} Node.js execution failed: $test_result"
         fi
     fi
-    
+
     # Check NODE_PATH
     echo -e "   ${INFO} NODE_PATH: ${NODE_PATH:-'(not set)'}"
-    
-    # Find Node.js in Nix store
+
+    # Find Node.js in Nix store (with timeout to prevent hanging)
     if [ -d /nix/store ]; then
-        local node_paths=$(find /nix/store -name "node" -type f -executable 2>/dev/null | head -3)
+        echo -e "   ${INFO} Searching Nix store for Node.js installations..."
+        local node_paths=$(timeout 10s find /nix/store -name "node" -type f -executable 2>/dev/null | head -3)
         if [ -n "$node_paths" ]; then
-            echo -e "   ${INFO} Node.js installations in Nix store:"
+            echo -e "   ${INFO} Node.js installations found:"
             echo "$node_paths" | sed 's/^/      /'
+            echo -e "   ${INFO} Use full path in scripts: ${CYAN}$(echo "$node_paths" | head -1)${NC}"
+        else
+            echo -e "   ${WARNING} No Node.js found in Nix store (search timed out or not found)"
         fi
     fi
+
+    # Provide specific fixes for NixOS
+    echo -e "   ${INFO} ${YELLOW}NixOS-specific fixes:${NC}"
+    echo -e "      1. Source system profile: ${CYAN}source /etc/profile${NC}"
+    echo -e "      2. Add to shell profile: ${CYAN}export PATH=\"/run/current-system/sw/bin:\$PATH\"${NC}"
+    echo -e "      3. Rebuild NixOS: ${CYAN}sudo nixos-rebuild switch${NC}"
+    echo -e "      4. Use full path: ${CYAN}/run/current-system/sw/bin/node${NC}"
     echo
 }
 
