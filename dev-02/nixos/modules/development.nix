@@ -90,6 +90,8 @@
   environment.variables = {
     # Add Node.js to PATH for all users and scripts
     NODE_PATH = "${pkgs.nodejs}/lib/node_modules";
+    # NPM configuration for Flatpak compatibility
+    NPM_CONFIG_PREFIX = "/home/paddy/.var/app/com.visualstudio.code/data/node_modules";
   };
 
   # Set up shell initialization for all users

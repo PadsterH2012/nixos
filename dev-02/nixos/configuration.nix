@@ -21,6 +21,7 @@
     ./services/nfs.nix
     ./services/remote-access.nix
     ./services/auto-update.nix
+    ./services/vscode-flatpak-permissions.nix
 
     # Application configurations
     ./applications/vscode.nix
