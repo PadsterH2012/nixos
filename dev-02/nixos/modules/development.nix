@@ -122,12 +122,9 @@
     npm-version = "${pkgs.nodePackages.npm}/bin/npm --version";
     npx-version = "${pkgs.nodePackages.npm}/bin/npx --version";
 
-    # VS Code options for development
+    # VS Code options for development (code alias is defined in applications/vscode.nix)
     code-native = "${pkgs.vscode}/bin/code";  # Native VS Code (full system access)
     code-fhs = "${pkgs.vscode-fhs}/bin/code";  # FHS VS Code (better compatibility)
     code-flatpak = "flatpak run com.visualstudio.code";  # Flatpak VS Code (OAuth)
-
-    # Default to native for development
-    code = "${pkgs.vscode}/bin/code";
   };
 }
