@@ -24,16 +24,20 @@
       # Wait for flatpak to be ready
       sleep 5
 
-      # Create VS Code Flatpak data directories for Node.js
-      mkdir -p /home/paddy/.var/app/com.visualstudio.code/data/node_modules/bin
-      mkdir -p /home/paddy/.var/app/com.visualstudio.code/data/node_modules/lib
-      chown -R paddy:users /home/paddy/.var/app/com.visualstudio.code/data/node_modules || true
+      # Create VS Code Flatpak data directories for Node.js (only if writable)
+      if [ -w /home/paddy/.var/app/com.visualstudio.code ] || mkdir -p /home/paddy/.var/app/com.visualstudio.code/data/node_modules/bin 2>/dev/null; then
+        mkdir -p /home/paddy/.var/app/com.visualstudio.code/data/node_modules/bin || true
+        chown -R paddy:users /home/paddy/.var/app/com.visualstudio.code/data 2>/dev/null || true
 
-      # Create Node.js symlinks in Flatpak-accessible location
-      ln -sf ${pkgs.nodejs}/bin/node /home/paddy/.var/app/com.visualstudio.code/data/node_modules/bin/node
-      ln -sf ${pkgs.nodejs}/bin/npm /home/paddy/.var/app/com.visualstudio.code/data/node_modules/bin/npm
-      ln -sf ${pkgs.nodejs}/bin/npx /home/paddy/.var/app/com.visualstudio.code/data/node_modules/bin/npx
-      ln -sf ${pkgs.nodejs}/lib/node_modules /home/paddy/.var/app/com.visualstudio.code/data/node_modules/lib/node_modules
+        # Create Node.js symlinks in Flatpak-accessible location
+        ln -sf ${pkgs.nodejs}/bin/node /home/paddy/.var/app/com.visualstudio.code/data/node_modules/bin/node 2>/dev/null || true
+        ln -sf ${pkgs.nodejs}/bin/npm /home/paddy/.var/app/com.visualstudio.code/data/node_modules/bin/npm 2>/dev/null || true
+        ln -sf ${pkgs.nodejs}/bin/npx /home/paddy/.var/app/com.visualstudio.code/data/node_modules/bin/npx 2>/dev/null || true
+
+        echo "Node.js symlinks created for VS Code Flatpak"
+      else
+        echo "VS Code Flatpak directory not writable, skipping symlink creation"
+      fi
 
       echo "Node.js symlinks created for VS Code Flatpak"
 
@@ -92,15 +96,19 @@
     script = ''
       # Create directories
       mkdir -p ~/.var/app/com.visualstudio.code/data/node_modules/bin
-      mkdir -p ~/.var/app/com.visualstudio.code/data/node_modules/lib
 
-      # Create Node.js symlinks
-      ln -sf ${pkgs.nodejs}/bin/node ~/.var/app/com.visualstudio.code/data/node_modules/bin/node
-      ln -sf ${pkgs.nodejs}/bin/npm ~/.var/app/com.visualstudio.code/data/node_modules/bin/npm
-      ln -sf ${pkgs.nodejs}/bin/npx ~/.var/app/com.visualstudio.code/data/node_modules/bin/npx
-      ln -sf ${pkgs.nodejs}/lib/node_modules ~/.var/app/com.visualstudio.code/data/node_modules/lib/node_modules
+      # Create Node.js symlinks (only if not already present)
+      if [ ! -L ~/.var/app/com.visualstudio.code/data/node_modules/bin/node ]; then
+        ln -sf ${pkgs.nodejs}/bin/node ~/.var/app/com.visualstudio.code/data/node_modules/bin/node
+      fi
+      if [ ! -L ~/.var/app/com.visualstudio.code/data/node_modules/bin/npm ]; then
+        ln -sf ${pkgs.nodejs}/bin/npm ~/.var/app/com.visualstudio.code/data/node_modules/bin/npm
+      fi
+      if [ ! -L ~/.var/app/com.visualstudio.code/data/node_modules/bin/npx ]; then
+        ln -sf ${pkgs.nodejs}/bin/npx ~/.var/app/com.visualstudio.code/data/node_modules/bin/npx
+      fi
 
-      echo "Node.js symlinks created for user session"
+      echo "Node.js symlinks ensured for user session"
     '';
   };
 
@@ -149,19 +157,23 @@
 
   # Activation script to ensure Node.js symlinks are created immediately
   system.activationScripts.vscode-nodejs-setup = ''
-    # Create VS Code Flatpak Node.js symlinks during system activation
-    mkdir -p /home/paddy/.var/app/com.visualstudio.code/data/node_modules/bin
-    mkdir -p /home/paddy/.var/app/com.visualstudio.code/data/node_modules/lib
+    # Create VS Code Flatpak Node.js symlinks during system activation (if possible)
+    if [ -d /home/paddy ] && [ ! -f /home/paddy/.var/app/com.visualstudio.code/data/node_modules/bin/node ]; then
+      mkdir -p /home/paddy/.var/app/com.visualstudio.code/data/node_modules/bin 2>/dev/null || true
 
-    # Create symlinks
-    ln -sf ${pkgs.nodejs}/bin/node /home/paddy/.var/app/com.visualstudio.code/data/node_modules/bin/node
-    ln -sf ${pkgs.nodejs}/bin/npm /home/paddy/.var/app/com.visualstudio.code/data/node_modules/bin/npm
-    ln -sf ${pkgs.nodejs}/bin/npx /home/paddy/.var/app/com.visualstudio.code/data/node_modules/bin/npx
-    ln -sf ${pkgs.nodejs}/lib/node_modules /home/paddy/.var/app/com.visualstudio.code/data/node_modules/lib/node_modules
+      # Create symlinks only if directory is writable
+      if [ -w /home/paddy/.var/app/com.visualstudio.code/data/node_modules/bin ] 2>/dev/null; then
+        ln -sf ${pkgs.nodejs}/bin/node /home/paddy/.var/app/com.visualstudio.code/data/node_modules/bin/node 2>/dev/null || true
+        ln -sf ${pkgs.nodejs}/bin/npm /home/paddy/.var/app/com.visualstudio.code/data/node_modules/bin/npm 2>/dev/null || true
+        ln -sf ${pkgs.nodejs}/bin/npx /home/paddy/.var/app/com.visualstudio.code/data/node_modules/bin/npx 2>/dev/null || true
 
-    # Set proper ownership
-    chown -R paddy:users /home/paddy/.var/app/com.visualstudio.code/data/node_modules 2>/dev/null || true
+        # Set proper ownership
+        chown -R paddy:users /home/paddy/.var/app/com.visualstudio.code/data 2>/dev/null || true
 
-    echo "VS Code Flatpak Node.js environment configured"
+        echo "VS Code Flatpak Node.js environment configured"
+      else
+        echo "VS Code Flatpak directory not yet writable, will be configured by user service"
+      fi
+    fi
   '';
 }
