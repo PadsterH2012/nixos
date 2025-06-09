@@ -29,8 +29,10 @@ Select tests to run:
   6) 📦 VS Code Environment
   7) 📦 Network Connectivity
 
-  8) 🚀 Run All Tests
-  9) ℹ️  Show Help
+  8) ⚙️  Change System Hostname
+
+  9) 🚀 Run All Tests
+  h) ℹ️  Show Help
   0) Exit
 
 Enter your choice [0-9]:
@@ -71,6 +73,7 @@ chmod +x nixos-dev-test.sh
 | `--git` | Git installation and configuration |
 | `--vscode` | VS Code installation |
 | `--network` | Network connectivity tests |
+| `--hostname` | Change system hostname (interactive) |
 | `--all` | Run all available tests |
 
 ## 🎯 Common Use Cases
@@ -102,6 +105,11 @@ curl -sSL https://raw.githubusercontent.com/PadsterH2012/nixos/main/nixos-dev-te
 #### Network Connectivity Test
 ```bash
 curl -sSL https://raw.githubusercontent.com/PadsterH2012/nixos/main/nixos-dev-test.sh | bash -s -- --network
+```
+
+#### Change System Hostname
+```bash
+curl -sSL https://raw.githubusercontent.com/PadsterH2012/nixos/main/nixos-dev-test.sh | bash -s -- --hostname
 ```
 
 ## 🔍 What It Tests
@@ -143,6 +151,14 @@ curl -sSL https://raw.githubusercontent.com/PadsterH2012/nixos/main/nixos-dev-te
 - ✅ GitHub connectivity
 - ✅ Development server connectivity (10.202.28.111)
 
+### Hostname Management (`--hostname`)
+- ✅ Display current hostname
+- ✅ Interactive hostname change wizard
+- ✅ Hostname format validation
+- ✅ Temporary change (until reboot)
+- ✅ Permanent change instructions for NixOS
+- ✅ Specific guidance for dev-02 configuration
+
 ## 🛠️ Common Issues & Solutions
 
 ### Node.js Not Found in Scripts
@@ -180,6 +196,25 @@ sudo nixos-rebuild switch
 
 # Use Flatpak VS Code for better compatibility
 flatpak install flathub com.visualstudio.code
+```
+
+### Change Hostname on NixOS
+**Problem**: Need to change system hostname
+
+**Solutions**:
+```bash
+# Temporary change (until reboot)
+sudo hostnamectl set-hostname new-hostname
+
+# Permanent change - edit NixOS configuration
+sudo nano /etc/nixos/configuration.nix
+# Change: networking.hostName = "new-hostname";
+sudo nixos-rebuild switch
+
+# For dev-02 configuration
+# Edit: dev-02/nixos/modules/networking.nix
+# Change: networking.hostName = "new-hostname";
+# Deploy: cd dev-02 && ./deploy.sh
 ```
 
 ## 🎨 Features

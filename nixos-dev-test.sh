@@ -34,6 +34,7 @@ TEST_GIT=false
 TEST_VSCODE=false
 TEST_NETWORK=false
 TEST_ALL=false
+CHANGE_HOSTNAME=false
 
 # Show interactive menu if no arguments provided
 show_menu() {
@@ -54,11 +55,13 @@ show_menu() {
     echo -e "  ${GREEN}6)${NC} ${PACKAGE} VS Code Environment"
     echo -e "  ${GREEN}7)${NC} ${PACKAGE} Network Connectivity"
     echo
-    echo -e "  ${YELLOW}8)${NC} ${ROCKET} Run All Tests"
-    echo -e "  ${YELLOW}9)${NC} ${INFO} Show Help"
+    echo -e "  ${CYAN}8)${NC} ${GEAR} Change System Hostname"
+    echo
+    echo -e "  ${YELLOW}9)${NC} ${ROCKET} Run All Tests"
+    echo -e "  ${YELLOW}h)${NC} ${INFO} Show Help"
     echo -e "  ${RED}0)${NC} Exit"
     echo
-    echo -ne "${BLUE}Enter your choice [0-9]: ${NC}"
+    echo -ne "${BLUE}Enter your choice [0-9,h]: ${NC}"
 }
 
 # Parse command line arguments or show menu
@@ -97,10 +100,14 @@ if [[ $# -eq 0 ]]; then
                 break
                 ;;
             8)
-                TEST_ALL=true
+                CHANGE_HOSTNAME=true
                 break
                 ;;
             9)
+                TEST_ALL=true
+                break
+                ;;
+            h|H)
                 echo
                 echo -e "${BLUE}$SCRIPT_NAME v$VERSION${NC}"
                 echo
@@ -114,6 +121,7 @@ if [[ $# -eq 0 ]]; then
                 echo "  --git       Test Git installation and configuration"
                 echo "  --vscode    Test VS Code installation"
                 echo "  --network   Test network connectivity"
+                echo "  --hostname  Change system hostname"
                 echo "  --all       Run all tests"
                 echo "  --help      Show this help message"
                 echo
@@ -131,7 +139,7 @@ if [[ $# -eq 0 ]]; then
                 exit 0
                 ;;
             *)
-                echo -e "${RED}Invalid choice. Please select 0-9.${NC}"
+                echo -e "${RED}Invalid choice. Please select 0-9 or h.${NC}"
                 sleep 2
                 continue
                 ;;
@@ -169,6 +177,10 @@ else
                 TEST_NETWORK=true
                 shift
                 ;;
+            --hostname)
+                CHANGE_HOSTNAME=true
+                shift
+                ;;
             --all)
                 TEST_ALL=true
                 shift
@@ -186,12 +198,14 @@ else
                 echo "  --git       Test Git installation and configuration"
                 echo "  --vscode    Test VS Code installation"
                 echo "  --network   Test network connectivity"
+                echo "  --hostname  Change system hostname"
                 echo "  --all       Run all tests"
                 echo "  --help      Show this help message"
                 echo
                 echo "Examples:"
                 echo "  curl -sSL https://raw.githubusercontent.com/PadsterH2012/nixos/main/nixos-dev-test.sh | bash"
                 echo "  curl -sSL https://raw.githubusercontent.com/PadsterH2012/nixos/main/nixos-dev-test.sh | bash -s -- --node"
+                echo "  curl -sSL https://raw.githubusercontent.com/PadsterH2012/nixos/main/nixos-dev-test.sh | bash -s -- --hostname"
                 echo "  curl -sSL https://raw.githubusercontent.com/PadsterH2012/nixos/main/nixos-dev-test.sh | bash -s -- --all"
                 exit 0
                 ;;
@@ -385,28 +399,107 @@ test_vscode() {
 
 test_network() {
     print_section "${PACKAGE} Network Connectivity"
-    
+
     # Test basic connectivity
     echo -e "   ${INFO} Testing network connectivity:"
-    
+
     if ping -c 1 8.8.8.8 >/dev/null 2>&1; then
         echo -e "      ${CHECK} Internet connectivity (8.8.8.8)"
     else
         echo -e "      ${CROSS} No internet connectivity"
     fi
-    
+
     if ping -c 1 github.com >/dev/null 2>&1; then
         echo -e "      ${CHECK} GitHub connectivity"
     else
         echo -e "      ${CROSS} Cannot reach GitHub"
     fi
-    
+
     # Test specific development server
     if ping -c 1 10.202.28.111 >/dev/null 2>&1; then
         echo -e "      ${CHECK} Development server (10.202.28.111) reachable"
     else
         echo -e "      ${WARNING} Development server (10.202.28.111) not reachable"
     fi
+    echo
+}
+
+change_hostname() {
+    print_section "${GEAR} Change System Hostname"
+
+    local current_hostname=$(hostname)
+    echo -e "   ${INFO} Current hostname: ${YELLOW}$current_hostname${NC}"
+    echo
+
+    # Check if running on NixOS
+    if [ ! -f /etc/NIXOS ]; then
+        echo -e "   ${WARNING} This feature is designed for NixOS systems"
+        echo -e "   ${INFO} For other systems, use: sudo hostnamectl set-hostname <new-name>"
+        echo
+        return
+    fi
+
+    echo -e "   ${BLUE}Enter new hostname (or press Enter to cancel):${NC}"
+    echo -ne "   ${CYAN}New hostname: ${NC}"
+    read -r new_hostname
+
+    # Validate input
+    if [[ -z "$new_hostname" ]]; then
+        echo -e "   ${YELLOW}Hostname change cancelled${NC}"
+        echo
+        return
+    fi
+
+    # Validate hostname format
+    if [[ ! "$new_hostname" =~ ^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$ ]]; then
+        echo -e "   ${CROSS} Invalid hostname format"
+        echo -e "   ${INFO} Hostname must:"
+        echo -e "      - Start and end with alphanumeric characters"
+        echo -e "      - Contain only letters, numbers, and hyphens"
+        echo -e "      - Be 1-63 characters long"
+        echo
+        return
+    fi
+
+    echo
+    echo -e "   ${WARNING} This will change your hostname from ${YELLOW}$current_hostname${NC} to ${YELLOW}$new_hostname${NC}"
+    echo -e "   ${INFO} Methods available:"
+    echo -e "      ${GREEN}1)${NC} Temporary change (until reboot)"
+    echo -e "      ${GREEN}2)${NC} Permanent change (requires NixOS rebuild)"
+    echo -e "      ${GREEN}3)${NC} Cancel"
+    echo
+    echo -ne "   ${BLUE}Choose method [1-3]: ${NC}"
+    read -r method_choice
+
+    case $method_choice in
+        1)
+            echo -e "   ${INFO} Applying temporary hostname change..."
+            if sudo hostnamectl set-hostname "$new_hostname" 2>/dev/null; then
+                echo -e "   ${CHECK} Hostname temporarily changed to: ${GREEN}$new_hostname${NC}"
+                echo -e "   ${WARNING} This change will be lost on reboot"
+                echo -e "   ${INFO} New hostname will be active in new shell sessions"
+            else
+                echo -e "   ${CROSS} Failed to change hostname temporarily"
+                echo -e "   ${INFO} You may need sudo privileges"
+            fi
+            ;;
+        2)
+            echo -e "   ${INFO} For permanent hostname change on NixOS:"
+            echo -e "   ${YELLOW}1.${NC} Edit your NixOS configuration:"
+            echo -e "      ${CYAN}sudo nano /etc/nixos/configuration.nix${NC}"
+            echo -e "   ${YELLOW}2.${NC} Find the line: ${CYAN}networking.hostName = \"...\";${NC}"
+            echo -e "   ${YELLOW}3.${NC} Change it to: ${CYAN}networking.hostName = \"$new_hostname\";${NC}"
+            echo -e "   ${YELLOW}4.${NC} Rebuild NixOS: ${CYAN}sudo nixos-rebuild switch${NC}"
+            echo
+            echo -e "   ${INFO} Or if using the dev-02 configuration:"
+            echo -e "   ${YELLOW}1.${NC} Edit: ${CYAN}dev-02/nixos/modules/networking.nix${NC}"
+            echo -e "   ${YELLOW}2.${NC} Change: ${CYAN}networking.hostName = \"$new_hostname\";${NC}"
+            echo -e "   ${YELLOW}3.${NC} Deploy: ${CYAN}cd dev-02 && ./deploy.sh${NC}"
+            ;;
+        3|*)
+            echo -e "   ${YELLOW}Hostname change cancelled${NC}"
+            ;;
+    esac
     echo
 }
 
@@ -445,8 +538,16 @@ if [[ "$TEST_NETWORK" == "true" ]]; then
     test_network
 fi
 
-# Final summary
-print_header "${ROCKET} Test Complete!"
+if [[ "$CHANGE_HOSTNAME" == "true" ]]; then
+    change_hostname
+fi
+
+# Final summary (only show for tests, not hostname change)
+if [[ "$CHANGE_HOSTNAME" == "false" ]]; then
+    print_header "${ROCKET} Test Complete!"
+else
+    print_header "${ROCKET} Hostname Management Complete!"
+fi
 
 echo -e "${YELLOW}Quick fixes for common issues:${NC}"
 echo
