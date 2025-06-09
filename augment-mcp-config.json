@@ -1,0 +1,86 @@
+{
+  "augment.advanced": {
+    "mcpServers": [
+      {
+        "name": "central-obsidian",
+        "command": "npx",
+        "args": [
+          "-y",
+          "mcp-remote",
+          "http://10.202.28.111:9090/obsidian-mcp-tools/sse",
+          "--allow-http"
+        ]
+      },
+      {
+        "name": "central-rpg",
+        "command": "npx",
+        "args": [
+          "-y",
+          "mcp-remote",
+          "http://10.202.28.111:9090/rpg-tools/sse",
+          "--allow-http"
+        ]
+      },
+      {
+        "name": "central-search",
+        "command": "npx",
+        "args": [
+          "-y",
+          "mcp-remote",
+          "http://10.202.28.111:9090/brave-search/sse",
+          "--allow-http"
+        ]
+      },
+      {
+        "name": "central-memory",
+        "command": "npx",
+        "args": [
+          "-y",
+          "mcp-remote",
+          "http://10.202.28.111:9090/memory/sse",
+          "--allow-http"
+        ]
+      },
+      {
+        "name": "central-mongodb",
+        "command": "npx",
+        "args": [
+          "-y",
+          "mcp-remote",
+          "http://10.202.28.111:9090/mongodb/sse",
+          "--allow-http"
+        ]
+      },
+      {
+        "name": "central-context7",
+        "command": "npx",
+        "args": [
+          "-y",
+          "mcp-remote",
+          "http://10.202.28.111:9090/Context7/sse",
+          "--allow-http"
+        ]
+      },
+      {
+        "name": "central-jenkins",
+        "command": "npx",
+        "args": [
+          "-y",
+          "mcp-remote",
+          "http://10.202.28.111:9090/jenkins-mcp/sse",
+          "--allow-http"
+        ]
+      },
+      {
+        "name": "central-proxmox",
+        "command": "npx",
+        "args": [
+          "-y",
+          "mcp-remote",
+          "http://10.202.28.111:9090/proxmox-mcp/sse",
+          "--allow-http"
+        ]
+      }
+    ]
+  }
+}

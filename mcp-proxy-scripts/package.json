@@ -1,0 +1,17 @@
+{
+  "name": "mcp-proxy-scripts",
+  "version": "1.0.0",
+  "description": "Proxy scripts to bridge HTTP MCP servers to command-line interface for Augment Code",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "node-fetch": "^3.3.2",
+    "eventsource": "^2.0.2"
+  },
+  "keywords": ["mcp", "proxy", "augment"],
+  "author": "paddy",
+  "license": "MIT"
+}

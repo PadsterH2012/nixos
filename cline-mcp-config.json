@@ -1,0 +1,28 @@
+{
+  "mcpServers": {
+    "central-obsidian": {
+      "url": "http://10.202.28.111:9090/obsidian-mcp-tools/sse"
+    },
+    "central-rpg": {
+      "url": "http://10.202.28.111:9090/rpg-tools/sse"
+    },
+    "central-search": {
+      "url": "http://10.202.28.111:9090/brave-search/sse"
+    },
+    "central-memory": {
+      "url": "http://10.202.28.111:9090/memory/sse"
+    },
+    "central-mongodb": {
+      "url": "http://10.202.28.111:9090/mongodb/sse"
+    },
+    "central-context7": {
+      "url": "http://10.202.28.111:9090/Context7/sse"
+    },
+    "central-jenkins": {
+      "url": "http://10.202.28.111:9090/jenkins-mcp/sse"
+    },
+    "central-proxmox": {
+      "url": "http://10.202.28.111:9090/proxmox-mcp/sse"
+    }
+  }
+}

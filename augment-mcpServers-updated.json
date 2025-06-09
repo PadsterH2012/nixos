@@ -1,0 +1,184 @@
+[
+  {
+    "name": "brave-search",
+    "command": "npx -y @modelcontextprotocol/server-brave-search",
+    "arguments": "",
+    "useShellInterpolation": true,
+    "env": {
+      "BRAVE_API_KEY": "BSAbdHVytPmF2WhqRWsiwP-NPAfqdF_"
+    },
+    "id": "5b41b04e-34b3-4642-a585-bfa26eb7b182",
+    "tools": ["brave_web_search", "brave_local_search"],
+    "disabledTools": []
+  },
+  {
+    "name": "Context7",
+    "command": "npx -y @upstash/context7-mcp@latest",
+    "arguments": "",
+    "useShellInterpolation": true,
+    "id": "af52467c-a19a-4e88-ae1e-26325c79a85b",
+    "tools": ["resolve-library-id", "get-library-docs"],
+    "disabledTools": []
+  },
+  {
+    "name": "memory",
+    "command": "docker run -i -v claude-memory:/app/dist --rm mcp/memory",
+    "arguments": "",
+    "useShellInterpolation": true,
+    "id": "34581aaf-4b98-4421-b3fc-4f5055fc9a76",
+    "tools": ["create_entities", "create_relations", "add_observations", "delete_entities", "delete_observations", "delete_relations", "read_graph", "search_nodes", "open_nodes"],
+    "disabledTools": [],
+    "disabled": false
+  },
+  {
+    "name": "pdf-reader",
+    "command": "docker run -i --rm mcp/pdf-reader",
+    "arguments": "",
+    "useShellInterpolation": true,
+    "id": "3a928a52-73a3-4258-9719-cb121346592c",
+    "tools": [],
+    "disabledTools": [],
+    "disabled": true
+  },
+  {
+    "name": "obsidian-mcp-tools",
+    "command": "node /mnt/network_repo/obsidian-mcp-server/dist/index.js",
+    "arguments": "",
+    "useShellInterpolation": true,
+    "env": {
+      "OBSIDIAN_API_KEY": "aaf26856b8d7a3941617d8e835e3d61429cfdbbc2efa752a34aaa715404a322f",
+      "OBSIDIAN_REST_API_URL": "http://10.202.28.8:27123"
+    },
+    "id": "073c6266-8c48-4372-a4b7-49ae6ecdba6f",
+    "tools": ["list_notes", "get_note", "create_note", "update_note", "search_notes", "delete_note", "list_tags", "get_active_note"],
+    "disabledTools": [],
+    "disabled": false
+  },
+  {
+    "name": "mongodb",
+    "command": "npx mongo-mcp mongodb://10.202.28.46:27017",
+    "arguments": "",
+    "useShellInterpolation": true,
+    "id": "56f2ba17-a6e9-4986-8894-2768cd7c6be3",
+    "tools": ["listCollections", "find", "insertOne", "updateOne", "deleteOne", "createIndex", "dropIndex", "indexes"],
+    "disabledTools": []
+  },
+  {
+    "name": "rpg-tools",
+    "command": "node /mnt/network_repo/rule_book/custom-rpg-mcp-server.js",
+    "arguments": "",
+    "useShellInterpolation": true,
+    "id": "9775d75a-308d-458a-a908-750c5629210c",
+    "disabled": false,
+    "tools": ["import_monster", "list_monsters", "get_monster", "delete_monster"],
+    "disabledTools": []
+  },
+  {
+    "name": "diagramai",
+    "command": "node /home/paddy/.local/share/diagramai-mcp/standalone-server.js",
+    "arguments": "",
+    "useShellInterpolation": true,
+    "id": "0e36c649-9486-42c9-a3a9-1a9c559d2528",
+    "tools": ["create_diagram", "list_diagrams", "get_diagram", "add_node", "add_edge", "delete_diagram"],
+    "disabledTools": [],
+    "env": {
+      "DIAGRAMAI_WS_URL": "ws://10.202.28.111:3000/ws/diagrams"
+    },
+    "disabled": false
+  },
+  {
+    "name": "jenkins-mcp",
+    "command": "uvx jenkins-mcp",
+    "arguments": "",
+    "useShellInterpolation": true,
+    "env": {
+      "JENKINS_URL": "http://10.202.28.26:8080/",
+      "JENKINS_USERNAME": "jenkins",
+      "JENKINS_PASSWORD": "P0w3rPla72012@@",
+      "JENKINS_USE_API_TOKEN": "false"
+    },
+    "id": "84a3b17a-0108-48cd-b1d1-a70189cd5993",
+    "tools": ["list_jobs", "trigger_build", "get_build_status"],
+    "disabledTools": []
+  },
+  {
+    "name": "central-obsidian",
+    "command": "npx -y mcp-remote http://10.202.28.111:9090/obsidian-mcp-tools/sse --allow-http",
+    "arguments": "",
+    "useShellInterpolation": true,
+    "id": "central-obsidian-001",
+    "tools": ["list_notes", "get_note", "create_note", "update_note", "search_notes", "delete_note", "list_tags", "get_active_note"],
+    "disabledTools": [],
+    "disabled": false
+  },
+  {
+    "name": "central-rpg",
+    "command": "npx -y mcp-remote http://10.202.28.111:9090/rpg-tools/sse --allow-http",
+    "arguments": "",
+    "useShellInterpolation": true,
+    "id": "central-rpg-001",
+    "tools": ["import_monster", "list_monsters", "get_monster", "delete_monster"],
+    "disabledTools": [],
+    "disabled": false
+  },
+  {
+    "name": "central-search",
+    "command": "npx -y mcp-remote http://10.202.28.111:9090/brave-search/sse --allow-http",
+    "arguments": "",
+    "useShellInterpolation": true,
+    "id": "central-search-001",
+    "tools": ["brave_web_search", "brave_local_search"],
+    "disabledTools": [],
+    "disabled": false
+  },
+  {
+    "name": "central-memory",
+    "command": "npx -y mcp-remote http://10.202.28.111:9090/memory/sse --allow-http",
+    "arguments": "",
+    "useShellInterpolation": true,
+    "id": "central-memory-001",
+    "tools": [],
+    "disabledTools": [],
+    "disabled": false
+  },
+  {
+    "name": "central-mongodb",
+    "command": "npx -y mcp-remote http://10.202.28.111:9090/mongodb/sse --allow-http",
+    "arguments": "",
+    "useShellInterpolation": true,
+    "id": "central-mongodb-001",
+    "tools": [],
+    "disabledTools": [],
+    "disabled": false
+  },
+  {
+    "name": "central-context7",
+    "command": "npx -y mcp-remote http://10.202.28.111:9090/Context7/sse --allow-http",
+    "arguments": "",
+    "useShellInterpolation": true,
+    "id": "central-context7-001",
+    "tools": [],
+    "disabledTools": [],
+    "disabled": false
+  },
+  {
+    "name": "central-jenkins",
+    "command": "npx -y mcp-remote http://10.202.28.111:9090/jenkins-mcp/sse --allow-http",
+    "arguments": "",
+    "useShellInterpolation": true,
+    "id": "central-jenkins-001",
+    "tools": [],
+    "disabledTools": [],
+    "disabled": false
+  },
+  {
+    "name": "central-proxmox",
+    "command": "npx -y mcp-remote http://10.202.28.111:9090/proxmox-mcp/sse --allow-http",
+    "arguments": "",
+    "useShellInterpolation": true,
+    "id": "central-proxmox-001",
+    "tools": [],
+    "disabledTools": [],
+    "disabled": false
+  }
+]
