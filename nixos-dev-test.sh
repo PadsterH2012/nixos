@@ -66,10 +66,25 @@ show_menu() {
 
 # Parse command line arguments or show menu
 if [[ $# -eq 0 ]]; then
-    # Interactive mode
-    while true; do
-        show_menu
-        read -r choice
+    # Check if we have a TTY for interactive mode
+    if [[ ! -t 0 ]]; then
+        echo -e "${YELLOW}No interactive terminal detected (running via curl/pipe)${NC}"
+        echo -e "${INFO} Running basic system test by default..."
+        echo -e "${INFO} For interactive menu, download and run locally:"
+        echo -e "   ${CYAN}wget https://raw.githubusercontent.com/PadsterH2012/nixos/main/nixos-dev-test.sh${NC}"
+        echo -e "   ${CYAN}chmod +x nixos-dev-test.sh${NC}"
+        echo -e "   ${CYAN}./nixos-dev-test.sh${NC}"
+        echo
+        echo -e "${INFO} Or use command line options:"
+        echo -e "   ${CYAN}curl -sSL .../nixos-dev-test.sh | bash -s -- --node${NC}"
+        echo -e "   ${CYAN}curl -sSL .../nixos-dev-test.sh | bash -s -- --all${NC}"
+        echo
+        TEST_BASIC=true
+    else
+        # Interactive mode
+        while true; do
+            show_menu
+            read -r choice
         case $choice in
             1)
                 TEST_BASIC=true
@@ -144,7 +159,8 @@ if [[ $# -eq 0 ]]; then
                 continue
                 ;;
         esac
-    done
+        done
+    fi
 else
     # Command line mode
     while [[ $# -gt 0 ]]; do

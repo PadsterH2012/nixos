@@ -4,12 +4,23 @@ Universal test script for diagnosing NixOS development environments. Features an
 
 ## 🎯 Interactive Menu Mode (Recommended)
 
-Simply run the script and choose from the menu:
+### For Local Use (Full Interactive Menu)
 
 ```bash
-# Interactive menu - just run and choose what to test!
+# Download and run locally for full interactive menu
+wget https://raw.githubusercontent.com/PadsterH2012/nixos/main/nixos-dev-test.sh
+chmod +x nixos-dev-test.sh
+./nixos-dev-test.sh
+```
+
+### For Remote Use (Auto-runs Basic Test)
+
+```bash
+# When run via curl, automatically runs basic system test
 curl -sSL https://raw.githubusercontent.com/PadsterH2012/nixos/main/nixos-dev-test.sh | bash
 ```
+
+**Note**: The interactive menu requires a TTY (terminal). When run via curl/pipe, it automatically runs the basic system test and shows you how to access the full menu.
 
 **Menu Options:**
 ```
@@ -80,9 +91,14 @@ chmod +x nixos-dev-test.sh
 
 ### 🎮 Interactive Diagnosis (Easiest)
 ```bash
-# Just run and pick from the menu - perfect for troubleshooting!
-curl -sSL https://raw.githubusercontent.com/PadsterH2012/nixos/main/nixos-dev-test.sh | bash
+# Download for full interactive menu
+wget https://raw.githubusercontent.com/PadsterH2012/nixos/main/nixos-dev-test.sh
+chmod +x nixos-dev-test.sh
+./nixos-dev-test.sh
 # Then choose: 2) Node.js Environment
+
+# Or quick basic test via curl
+curl -sSL https://raw.githubusercontent.com/PadsterH2012/nixos/main/nixos-dev-test.sh | bash
 ```
 
 ### 🤖 Automated Testing (For Scripts/CI)
