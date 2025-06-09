@@ -18,6 +18,7 @@
     gcc
     gnumake
     nodejs
+    nodePackages.npm
     python3
     python3Packages.pip
     docker

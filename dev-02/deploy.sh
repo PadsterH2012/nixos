@@ -25,7 +25,7 @@ fi
 
 # Create necessary directories
 echo "📁 Creating directory structure..."
-sudo mkdir -p /etc/nixos/modules /etc/nixos/services
+sudo mkdir -p /etc/nixos/modules /etc/nixos/services /etc/nixos/applications
 
 # Download all configuration files
 echo "⬇️  Downloading configuration files from GitHub..."
@@ -62,6 +62,28 @@ sudo curl -s -o /etc/nixos/services/nfs.nix "$BASE_URL/services/nfs.nix"
 echo "  - services/remote-access.nix"
 sudo curl -s -o /etc/nixos/services/remote-access.nix "$BASE_URL/services/remote-access.nix"
 
+echo "  - services/auto-update.nix"
+sudo curl -s -o /etc/nixos/services/auto-update.nix "$BASE_URL/services/auto-update.nix"
+
+# Applications
+echo "  - applications/vscode.nix"
+sudo curl -s -o /etc/nixos/applications/vscode.nix "$BASE_URL/applications/vscode.nix"
+
+echo "  - applications/vscode-extensions.nix"
+sudo curl -s -o /etc/nixos/applications/vscode-extensions.nix "$BASE_URL/applications/vscode-extensions.nix"
+
+echo "  - applications/mcp-config.nix"
+sudo curl -s -o /etc/nixos/applications/mcp-config.nix "$BASE_URL/applications/mcp-config.nix"
+
+echo "  - applications/augment-settings.nix"
+sudo curl -s -o /etc/nixos/applications/augment-settings.nix "$BASE_URL/applications/augment-settings.nix"
+
+echo "  - applications/git.nix"
+sudo curl -s -o /etc/nixos/applications/git.nix "$BASE_URL/applications/git.nix"
+
+echo "  - applications/terminal.nix"
+sudo curl -s -o /etc/nixos/applications/terminal.nix "$BASE_URL/applications/terminal.nix"
+
 echo "✅ All files downloaded successfully"
 
 # Verify files exist
@@ -76,6 +98,13 @@ REQUIRED_FILES=(
     "/etc/nixos/services/audio.nix"
     "/etc/nixos/services/nfs.nix"
     "/etc/nixos/services/remote-access.nix"
+    "/etc/nixos/services/auto-update.nix"
+    "/etc/nixos/applications/vscode.nix"
+    "/etc/nixos/applications/vscode-extensions.nix"
+    "/etc/nixos/applications/mcp-config.nix"
+    "/etc/nixos/applications/augment-settings.nix"
+    "/etc/nixos/applications/git.nix"
+    "/etc/nixos/applications/terminal.nix"
 )
 
 for file in "${REQUIRED_FILES[@]}"; do
@@ -91,7 +120,7 @@ echo "✅ All required files verified"
 echo ""
 echo "📋 Configuration Summary:"
 echo "  - Desktop: Cinnamon (modern, XRDP-compatible)"
-echo "  - Development: VS Code, Git, Docker, Node.js, Python"
+echo "  - Development: VS Code, Git, Docker, Node.js/npm/npx, Python"
 echo "  - Remote Access: SSH + XRDP"
 echo "  - Audio: PipeWire"
 echo "  - Localization: UK (en_GB)"
@@ -131,6 +160,7 @@ echo "   - VS Code: 'code' command or desktop shortcut"
 echo "   - Terminal: 'gnome-terminal' or desktop shortcut"
 echo "   - Docker: 'docker' command (user paddy is in docker group)"
 echo "   - Git: 'git' command"
+echo "   - Node.js: 'node', 'npm', 'npx' commands"
 echo ""
 echo "If you don't see the taskbar/menu in XRDP, run:"
 echo "sudo /etc/xrdp/start-cinnamon-desktop.sh"
