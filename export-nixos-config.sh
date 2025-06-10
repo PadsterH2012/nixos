@@ -32,14 +32,25 @@ REPO_DIR="/tmp/nixos-export"
 CONFIG_SOURCE="/etc/nixos"
 HOST_CONFIG_SOURCE="/run/host/etc/nixos"  # For Flatpak containers
 
-# GitHub Authentication (set these as environment variables or edit here)
+# GitHub Authentication - Load from config file first, then environment
 GITHUB_USERNAME="${GITHUB_USERNAME:-PadsterH2012}"
-GITHUB_TOKEN="${GITHUB_TOKEN:-}"  # Set via environment variable for security
+GITHUB_TOKEN="${GITHUB_TOKEN:-}"
 
-# Try to load token from config file if not set
-if [ -z "$GITHUB_TOKEN" ] && [ -f "$HOME/.nixos-export-config" ]; then
-    source "$HOME/.nixos-export-config"
-fi
+# Try multiple config file locations
+CONFIG_LOCATIONS=(
+    "$HOME/.nixos-export-config"
+    "/etc/nixos-export-config"
+    "/root/.nixos-export-config"
+    "$(dirname "$0")/.nixos-export-config"
+)
+
+for config_file in "${CONFIG_LOCATIONS[@]}"; do
+    if [ -f "$config_file" ] && [ -r "$config_file" ]; then
+        echo "Loading config from: $config_file" >&2
+        source "$config_file"
+        break
+    fi
+done
 
 print_header() {
     echo -e "${PURPLE}╔══════════════════════════════════════════════════════════════╗${NC}"
@@ -121,25 +132,36 @@ clone_or_update_repo() {
     # Clean up any existing directory
     rm -rf "$REPO_DIR"
 
+    # Configure Git to disable interactive prompts
+    export GIT_TERMINAL_PROMPT=0
+    export GIT_ASKPASS=/bin/echo
+    export SSH_ASKPASS=/bin/echo
+    export GCM_INTERACTIVE=never
+
+    # Disable Git credential helpers that might cause popups
+    git config --global credential.helper ""
+
     # Prepare repository URL with authentication if token is provided
     local auth_url="$REPO_URL"
     if [ -n "$GITHUB_TOKEN" ]; then
         # Convert https://github.com/user/repo.git to https://username:token@github.com/user/repo.git
         auth_url=$(echo "$REPO_URL" | sed "s|https://github.com/|https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/|")
-        echo -e "   ${INFO} Using authenticated access"
+        echo -e "   ${INFO} Using authenticated access (non-interactive)"
     else
         echo -e "   ${WARNING} No GitHub token provided - may fail for private repositories"
         echo -e "   ${INFO} Set GITHUB_TOKEN environment variable for authentication"
     fi
 
-    # Clone the repository
-    if git clone "$auth_url" "$REPO_DIR" 2>/dev/null; then
+    # Clone the repository with explicit non-interactive settings
+    if GIT_TERMINAL_PROMPT=0 git clone "$auth_url" "$REPO_DIR" 2>/dev/null; then
         echo -e "   ${CHECK} Repository cloned successfully"
     else
         echo -e "   ${CROSS} Failed to clone repository"
         if [ -z "$GITHUB_TOKEN" ]; then
             echo -e "   ${INFO} For private repositories, set your GitHub token:"
             echo -e "   ${CYAN}export GITHUB_TOKEN='your_personal_access_token'${NC}"
+        else
+            echo -e "   ${INFO} Check your token permissions and repository access"
         fi
         echo -e "   ${INFO} Creating new repository structure..."
         mkdir -p "$REPO_DIR"
@@ -433,23 +455,27 @@ Network:
     # Push to repository
     local push_success=false
 
+    # Ensure non-interactive Git operations
+    export GIT_TERMINAL_PROMPT=0
+    export GIT_ASKPASS=/bin/echo
+
     if [ -n "$GITHUB_TOKEN" ]; then
         # Set up authenticated remote for push
         local auth_url=$(echo "$REPO_URL" | sed "s|https://github.com/|https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/|")
         git remote set-url origin "$auth_url" 2>/dev/null || true
-    fi
 
-    if git push origin main 2>/dev/null; then
-        echo -e "   ${CHECK} Changes pushed to repository"
-        push_success=true
-    else
-        echo -e "   ${WARNING} Failed to push changes"
-        if [ -z "$GITHUB_TOKEN" ]; then
-            echo -e "   ${INFO} For private repositories, set your GitHub token:"
-            echo -e "   ${CYAN}export GITHUB_TOKEN='your_personal_access_token'${NC}"
+        # Push with explicit non-interactive settings
+        if GIT_TERMINAL_PROMPT=0 git push origin main 2>/dev/null; then
+            echo -e "   ${CHECK} Changes pushed to repository"
+            push_success=true
         else
+            echo -e "   ${WARNING} Failed to push changes"
             echo -e "   ${INFO} Check your token permissions and repository access"
+            echo -e "   ${INFO} Changes are committed locally in: $REPO_DIR"
         fi
+    else
+        echo -e "   ${WARNING} No GitHub token provided - cannot push to private repository"
+        echo -e "   ${INFO} Set GITHUB_TOKEN environment variable for authentication"
         echo -e "   ${INFO} Changes are committed locally in: $REPO_DIR"
     fi
     
@@ -471,15 +497,20 @@ main() {
 
     # Check for GitHub authentication
     if [ -z "$GITHUB_TOKEN" ]; then
-        echo -e "${YELLOW}${WARNING} GitHub token not set${NC}"
-        echo -e "${INFO} For private repositories, set your Personal Access Token:"
-        echo -e "${CYAN}export GITHUB_TOKEN='ghp_your_token_here'${NC}"
-        echo -e "${INFO} Or run with: ${CYAN}GITHUB_TOKEN='your_token' $0${NC}"
+        echo -e "${YELLOW}${WARNING} GitHub token not found${NC}"
+        echo -e "${INFO} For hands-off operation, create a config file:"
+        echo -e "${CYAN}echo 'export GITHUB_TOKEN=\"ghp_your_token_here\"' > ~/.nixos-export-config${NC}"
+        echo -e "${CYAN}chmod 600 ~/.nixos-export-config${NC}"
+        echo
+        echo -e "${INFO} Alternative locations checked:"
+        for config_file in "${CONFIG_LOCATIONS[@]}"; do
+            echo -e "   • $config_file"
+        done
         echo
         echo -e "${INFO} Continuing without authentication (may fail for private repos)..."
         echo
     else
-        echo -e "${GREEN}${CHECK} GitHub authentication configured${NC}"
+        echo -e "${GREEN}${CHECK} GitHub authentication loaded${NC}"
         echo
     fi
 
