@@ -96,7 +96,7 @@ All specialized development VMs use static IP addresses:
 
 | Hostname | IP Address | Role | Purpose |
 |----------|------------|------|---------|
-| `hl-dev-nixos-builder` | 10.202.28.180 | NixOS Build Server | CI/CD, package building |
+| `hl-dev-nixos-builder` | 10.202.28.170 | NixOS Build Server | CI/CD, package building |
 | `hl-dev-ansible` | 10.202.28.181 | Ansible Automation | Infrastructure management |
 | `hl-dev-mcp-proxy` | 10.202.28.182 | MCP Proxy Services | Model Context Protocol |
 | `hl-dev-rpger` | 10.202.28.183 | RPG Development | Game development tools |
