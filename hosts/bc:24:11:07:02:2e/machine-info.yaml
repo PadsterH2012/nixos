@@ -1,5 +1,5 @@
 # Machine Information for nixos-dev-cinnamon
-# Generated on Tue 10 Jun 16:01:22 BST 2025
+# Generated on Tue 10 Jun 16:11:34 BST 2025
 
 machine:
   hostname: "nixos-dev-cinnamon"
@@ -7,7 +7,7 @@ machine:
   primary_interface: "ens18"
   all_macs: "02:42:a5:c4:77:56 bc:24:11:07:02:2e "
   nixos_version: "24.11.718657.ed29f002b6d6 (Vicuna)"
-  export_date: "2025-06-10T16:01:22+01:00"
+  export_date: "2025-06-10T16:11:34+01:00"
   config_type: "traditional"
 
 network:
