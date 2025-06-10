@@ -96,10 +96,27 @@
   };
 
   # Set up shell initialization for all users
-  programs.bash.shellInit = ''
-    # Ensure Node.js is in PATH for all bash sessions
-    export PATH="${pkgs.nodejs}/bin:${pkgs.nodePackages.npm}/bin:$PATH"
-  '';
+  programs.bash = {
+    enableCompletion = true;
+    shellInit = ''
+      # Ensure Node.js is in PATH for all bash sessions
+      export PATH="${pkgs.nodejs}/bin:${pkgs.nodePackages.npm}/bin:$PATH"
+
+      # Colorized bash prompt: green user@host, blue path
+      export PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+
+      # Enhanced history settings
+      export HISTSIZE=10000
+      export HISTFILESIZE=20000
+      export HISTCONTROL=ignoredups:erasedups
+
+      # Append to history file
+      shopt -s histappend
+
+      # Show user info on login
+      echo "Logged in as: $(whoami) on $(hostname)"
+    '';
+  };
 
   # Ensure system-wide profile includes Node.js
   environment.profileRelativeEnvVars = {
