@@ -1,0 +1,37 @@
+# Machine Information for nixos-dev-cinnamon
+# Generated on Tue 10 Jun 16:01:22 BST 2025
+
+machine:
+  hostname: "nixos-dev-cinnamon"
+  primary_mac: "bc:24:11:07:02:2e"
+  primary_interface: "ens18"
+  all_macs: "02:42:a5:c4:77:56 bc:24:11:07:02:2e "
+  nixos_version: "24.11.718657.ed29f002b6d6 (Vicuna)"
+  export_date: "2025-06-10T16:01:22+01:00"
+  config_type: "traditional"
+
+network:
+  primary_ip: "10.202.28.188"
+  primary_interface: "ens18"
+  gateway: "10.202.28.1"
+  dns_servers: "10.202.28.51 10.202.28.50 "
+  network_type: "NetworkManager (likely DHCP)"
+  
+# Network configuration for NixOS
+# Copy this to your networking.nix if using static IP
+nixos_network_config: |
+  networking = {
+    hostName = "nixos-dev-cinnamon";
+    # For DHCP (recommended):
+    networkmanager.enable = true;
+    
+    # For static IP (uncomment and modify if needed):
+    # interfaces.ens18 = {
+    #   ipv4.addresses = [{
+    #     address = "10.202.28.188";
+    #     prefixLength = 24;  # Adjust as needed
+    #   }];
+    # };
+    # defaultGateway = "10.202.28.1";
+    # nameservers = [ "10.202.28.51" "10.202.28.50" "" ];
+  };
