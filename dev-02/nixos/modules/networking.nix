@@ -4,7 +4,7 @@
 { config, pkgs, ... }:
 
 {
-  networking.hostName = "nixos-dev-cinnamon"; # Define your hostname.
+  networking.hostName = "hl-dev-nixos"; # Define your hostname.
 
   # Enable networking
   networking.networkmanager.enable = true;

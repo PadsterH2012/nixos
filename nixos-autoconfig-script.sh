@@ -497,6 +497,17 @@ upload_config() {
             log "Copied custom file: $filename"
         fi
     done
+
+    # Copy modular configuration directories (modules/, services/, applications/)
+    for subdir in modules services applications; do
+        if [[ -d "$NIXOS_CONFIG_DIR/$subdir" ]]; then
+            log "Copying $subdir directory..."
+            cp -r "$NIXOS_CONFIG_DIR/$subdir" "$host_dir/"
+            local subdir_files=$(find "$NIXOS_CONFIG_DIR/$subdir" -name "*.nix" | wc -l)
+            files_copied=$((files_copied + subdir_files))
+            log "Copied $subdir/ with $subdir_files files"
+        fi
+    done
     
     if [[ $files_copied -eq 0 ]]; then
         error "No configuration files found to upload"

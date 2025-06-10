@@ -2,7 +2,7 @@
 # Generated on Tue 10 Jun 15:33:36 BST 2025
 
 machine:
-  hostname: "nixos-dev-cinnamon"
+  hostname: "hl-dev-nixos-builder"
   primary_mac: "02:42:a5:c4:77:56"
   all_macs: "02:42:a5:c4:77:56 bc:24:11:07:02:2e "
   nixos_version: "unknown"
@@ -11,7 +11,7 @@ machine:
 
 network:
   primary_ip: ""
-  primary_interface: "unknown"
+  primary_interface: "ens18"
   gateway: "unknown"
   dns_servers: "10.202.28.51 10.202.28.50 "
   network_type: "Static/Unknown"
