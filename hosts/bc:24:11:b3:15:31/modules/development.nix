@@ -14,6 +14,7 @@
     git
     curl
     wget
+    nano
     
     # Core development tools
     gcc

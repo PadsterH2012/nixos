@@ -38,7 +38,6 @@
     description = "Paddy";
     extraGroups = [ "networkmanager" "wheel" "docker" ];
     packages = with pkgs; [
-      firefox
       google-chrome
       # Removed thunderbird to keep it more streamlined for dev work
     ];
