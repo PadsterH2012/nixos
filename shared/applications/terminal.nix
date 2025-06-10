@@ -7,7 +7,7 @@
   # Terminal enhancement packages
   environment.systemPackages = with pkgs; [
     # Enhanced terminal tools
-    exa           # Better ls
+    eza           # Better ls
     bat           # Better cat
     fd            # Better find
     ripgrep       # Better grep
@@ -39,10 +39,10 @@
   # Enhanced shell aliases for terminal tools
   environment.shellAliases = {
     # Enhanced ls commands
-    ll = "${pkgs.exa}/bin/exa -la --git";
-    la = "${pkgs.exa}/bin/exa -a";
-    ls = "${pkgs.exa}/bin/exa";
-    tree = "${pkgs.exa}/bin/exa --tree";
+    ll = "${pkgs.eza}/bin/eza -la --git";
+    la = "${pkgs.eza}/bin/eza -a";
+    ls = "${pkgs.eza}/bin/eza";
+    tree = "${pkgs.eza}/bin/eza --tree";
     
     # Enhanced cat
     cat = "${pkgs.bat}/bin/bat --style=plain --paging=never";
@@ -85,7 +85,7 @@
       bind 'set show-all-if-ambiguous on'
       
       # Enable colored output for ls
-      alias ls='${pkgs.exa}/bin/exa --color=auto'
+      alias ls='${pkgs.eza}/bin/eza --color=auto'
       
       # Enable colored output for grep
       alias grep='${pkgs.ripgrep}/bin/rg --color=auto'

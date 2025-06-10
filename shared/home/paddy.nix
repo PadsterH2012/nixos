@@ -26,8 +26,8 @@
     vlc
     
     # Utilities
-    gnome.file-roller
-    gnome.gnome-calculator
+    file-roller
+    gnome-calculator
   ];
 
   # Git configuration
