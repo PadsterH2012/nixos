@@ -13,18 +13,11 @@
   # configuration is compatible with.
   home.stateVersion = "24.11";
 
-  # User-specific packages
+  # User-specific packages (browsers and media handled at system level)
   home.packages = with pkgs; [
     # Development tools
     postman
-    
-    # Browsers
-    firefox
-    google-chrome
-    
-    # Media
-    vlc
-    
+
     # Utilities
     file-roller
     gnome-calculator
@@ -35,7 +28,7 @@
     enable = true;
     userName = "Paddy";
     userEmail = "paddy@bastiondata.com";
-    
+
     extraConfig = {
       init.defaultBranch = "main";
       pull.rebase = false;
@@ -46,21 +39,21 @@
   # Bash configuration
   programs.bash = {
     enable = true;
-    
+
     bashrcExtra = ''
       # Custom bash configuration for development
       export EDITOR="code --wait"
       export BROWSER="firefox"
-      
+
       # Development aliases
       alias ll='eza -la --git'
       alias la='eza -a'
       alias tree='eza --tree'
-      
+
       # Quick navigation
       alias ..='cd ..'
       alias ...='cd ../..'
-      
+
       # Git shortcuts
       alias gs='git status'
       alias ga='git add'
@@ -73,7 +66,7 @@
   # VS Code configuration
   programs.vscode = {
     enable = false;  # We use Flatpak VS Code for OAuth
-    
+
     # Extensions would go here if using native VS Code
     # extensions = with pkgs.vscode-extensions; [
     #   ms-python.python
