@@ -24,6 +24,7 @@
     ../applications/git.nix
     ../applications/terminal.nix
     ../applications/augment.nix
+    ../applications/mcp-servers.nix
   ];
 
   # User configuration - identical across all VMs

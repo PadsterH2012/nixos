@@ -212,6 +212,37 @@ The configuration is optimized for AI agents:
 - ✅ **VS Code Flatpak** with full development access
 - ✅ **Non-interactive operations** for automated deployment
 
+### **MCP Server Configuration**
+All VMs are pre-configured with MCP servers for AI agents:
+
+**Available MCP Servers:**
+- **central-proxmox** - `http://10.202.28.111:9090/proxmox-mcp/sse`
+- **neo-mcp-proxy-control** - `http://10.202.28.182:3000/mcp-proxy/sse`
+- **memory-mcp** - Local memory management
+- **filesystem-mcp** - File system access
+- **brave-search** - Web search capabilities
+
+**Configuration Files Created:**
+- Augment Code: `~/.config/augment/mcp-servers.json`
+- Claude Desktop: `~/.config/claude-desktop/claude_desktop_config.json`
+- Cline: `~/.config/cline/mcp-servers.json`
+- VS Code: `~/.var/app/com.visualstudio.code/config/Code/User/mcp-servers.json`
+
+**MCP Management Commands:**
+```bash
+# Test MCP server connectivity
+mcp-test
+
+# View MCP configuration
+mcp-config
+
+# Check Proxmox MCP health
+mcp-proxmox
+
+# Check MCP proxy health
+mcp-proxy
+```
+
 ### **AI Agent Commands**
 ```bash
 # Check system status
