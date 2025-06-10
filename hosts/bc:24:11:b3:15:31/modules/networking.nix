@@ -4,23 +4,20 @@
 { config, pkgs, ... }:
 
 {
-  networking.hostName = "nixos-dev-cinnamon"; # Define your hostname.
-
-  # Enable networking
-  networking.networkmanager.enable = true;
-
+  # Networking configuration
   networking = {
     hostName = "hl-dev-test1";
+    networkmanager.enable = true;
     
     # For static IP (uncomment and modify if needed):
-     interfaces.ens18 = {
-       ipv4.addresses = [{
-         address = "10.202.28.185";
-         prefixLength = 24;  # Adjust as needed
-       }];
-     };
-     defaultGateway = "10.202.28.1";
-     nameservers = [ "10.202.28.51" "10.202.28.50" "" ];
+    interfaces.ens18 = {
+      ipv4.addresses = [{
+        address = "10.202.28.185";
+        prefixLength = 24;  # Adjust as needed
+      }];
+    };
+    defaultGateway = "10.202.28.1";
+    nameservers = [ "10.202.28.51" "10.202.28.50" "" ];
   };
 
   # Configure firewall for development needs
