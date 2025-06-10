@@ -9,6 +9,20 @@
   # Enable networking
   networking.networkmanager.enable = true;
 
+  networking = {
+    hostName = "hl-dev-nixos-builder";
+    
+    # For static IP (uncomment and modify if needed):
+     interfaces.ens18 = {
+       ipv4.addresses = [{
+         address = "10.202.28.188";
+         prefixLength = 24;  # Adjust as needed
+       }];
+     };
+     defaultGateway = "10.202.28.1";
+     nameservers = [ "10.202.28.51" "10.202.28.50" "" ];
+  };
+
   # Configure firewall for development needs
   networking.firewall = {
     enable = true;
