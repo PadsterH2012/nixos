@@ -4,31 +4,23 @@
 { config, pkgs, ... }:
 
 {
-  # Install VS Code variants and extensions
+  # Install VS Code variants and basic extensions
   environment.systemPackages = with pkgs; [
     # VS Code variants
     vscode          # Native VS Code
     vscode-fhs      # FHS-compatible VS Code
   ] ++ (with pkgs.vscode-extensions; [
-    # Essential extensions
-    ms-vscode.cpptools
+    # Essential extensions (only well-supported ones)
     ms-python.python
-    bradlc.vscode-tailwindcss
-    esbenp.prettier-vscode
 
     # Git integration
     eamodio.gitlens
 
-    # Language support
-    ms-vscode.vscode-typescript-next
+    # Language support (basic)
     ms-vscode.vscode-json
-
-    # Themes and UI
-    pkief.material-icon-theme
 
     # Development tools
     ms-vscode.vscode-eslint
-    formulahendry.auto-rename-tag
   ]);
 
   # Shell aliases for VS Code variants
