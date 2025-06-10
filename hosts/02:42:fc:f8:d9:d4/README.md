@@ -1,7 +1,8 @@
-# NixOS Configuration for 02:42:fc:f8:d9:d4
+# NixOS Configuration for nixos-dev-cinnamon
 
-**Last Updated:** 2025-06-10 07:38:02 UTC
+**Last Updated:** 2025-06-10 07:43:47 UTC
 **Hostname:** nixos-dev-cinnamon
+**MAC Address:** 02:42:fc:f8:d9:d4
 **Architecture:** x86_64
 **Kernel:** 6.6.93
 
@@ -34,7 +35,6 @@
 ## Hardware Summary
 
 - **CPU:** AMD Ryzen 9 3900X 12-Core Processor
-BIOS - **CPU:** pc-i440fx-9.2  CPU @ 2.0GHz
 - **Memory:** 7.8Gi
 - **Root Filesystem:** 74G (34% used)
 
@@ -44,4 +44,4 @@ BIOS - **CPU:** pc-i440fx-9.2  CPU @ 2.0GHz
 - docker0
 
 ---
-*Generated automatically by nixos-auto-config on Tue 10 Jun 08:38:02 BST 2025*
+*Generated automatically by nixos-auto-config on Tue 10 Jun 08:43:48 BST 2025*
