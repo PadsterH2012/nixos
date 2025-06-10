@@ -5,8 +5,9 @@
 
 {
   # Bootloader configuration
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  # Use GRUB for VMs without EFI partitions
+  boot.loader.grub.enable = true;
+  boot.loader.grub.device = "/dev/sda"; # Install GRUB on the primary disk
 
   # Enable networking
   networking.networkmanager.enable = true;
