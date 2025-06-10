@@ -43,7 +43,7 @@
     bashrcExtra = ''
       # Custom bash configuration for development
       export EDITOR="code --wait"
-      export BROWSER="firefox"
+      export BROWSER="google-chrome"
 
       # Development aliases
       alias ll='eza -la --git'

@@ -11,14 +11,14 @@
     ../modules/development-tools.nix
     ../modules/localization.nix
     ../modules/hardware-common.nix
-    
+
     # Services
     ../services/audio.nix
     ../services/nfs.nix
     ../services/remote-access.nix
     ../services/auto-update.nix
     ../services/vscode-flatpak.nix
-    
+
     # Applications
     ../applications/vscode.nix
     ../applications/git.nix
@@ -33,7 +33,6 @@
     description = "Paddy";
     extraGroups = [ "networkmanager" "wheel" "docker" ];
     packages = with pkgs; [
-      firefox
       google-chrome
     ];
   };
@@ -59,7 +58,7 @@
       experimental-features = [ "nix-command" "flakes" ];
       auto-optimise-store = true;
     };
-    
+
     # Garbage collection
     gc = {
       automatic = true;
@@ -73,14 +72,14 @@
     # Flake management tools
     git
     nixos-rebuild
-    
+
     # Essential development tools (from working config)
     curl
     wget
     nano
     vim
     neovim
-    
+
     # System utilities
     htop
     tree
@@ -88,10 +87,10 @@
     zip
     file
     which
-    
+
     # NFS utilities for mapped drives
     nfs-utils
-    
+
     # Proxmox/VM utilities
     qemu-utils
     spice-vdagent
@@ -100,7 +99,7 @@
   # Environment variables for development (can be overridden by specific applications)
   environment.variables = {
     EDITOR = lib.mkDefault "code";
-    BROWSER = lib.mkDefault "firefox";
+    BROWSER = lib.mkDefault "google-chrome";
   };
 
   # Shell aliases for consistency (terminal aliases handled by terminal.nix)
