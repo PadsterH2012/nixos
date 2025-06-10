@@ -28,15 +28,7 @@
   environment.etc."machine-id".text = "hl-dev-nixos-builder";
 
   # Desktop environment customization
-  services.xserver.desktopManager.cinnamon = {
-    enable = true;
-    
-    # Custom session script to show identity
-    extraSessionCommands = ''
-      # Show machine identity in notification
-      ${pkgs.libnotify}/bin/notify-send "NixOS Build Server" "Machine: hl-dev-nixos-builder\nIP: 10.202.28.170\nRole: NixOS Build & CI/CD" --icon=computer
-    '';
-  };
+  services.xserver.desktopManager.cinnamon.enable = true;
 
   # Host-specific environment variables
   environment.variables = {
@@ -51,5 +43,18 @@
     build-all = "nix-build '<nixpkgs>' -A hello";
     check-cache = "cachix use";
     build-status = "systemctl status nix-daemon";
+  };
+
+  # Systemd user service to show machine identity notification on login
+  systemd.user.services.machine-identity-notification = {
+    description = "Show machine identity notification on login";
+    wantedBy = [ "graphical-session.target" ];
+    after = [ "graphical-session.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = false;
+      ExecStartPre = "${pkgs.coreutils}/bin/sleep 5";  # Wait for desktop to load
+      ExecStart = "${pkgs.libnotify}/bin/notify-send 'NixOS Build Server' 'Machine: hl-dev-nixos-builder\nIP: 10.202.28.170\nRole: NixOS Build & CI/CD' --icon=computer";
+    };
   };
 }
