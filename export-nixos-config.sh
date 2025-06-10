@@ -48,11 +48,22 @@ get_system_info() {
     HOSTNAME=$(hostname)
     echo -e "   ${CHECK} Hostname: ${GREEN}$HOSTNAME${NC}"
 
-    # Get MAC addresses for host identification
-    MAC_ADDRESSES=$(cat /sys/class/net/*/address 2>/dev/null | grep -v "00:00:00:00:00:00" | head -3 | tr '\n' ' ')
-    PRIMARY_MAC=$(echo $MAC_ADDRESSES | awk '{print $1}')
-    echo -e "   ${CHECK} Primary MAC: ${GREEN}$PRIMARY_MAC${NC}"
-    echo -e "   ${CHECK} All MACs: ${GREEN}$MAC_ADDRESSES${NC}"
+    # Get MAC addresses for host identification (exclude virtual interfaces)
+    ALL_MACS=$(cat /sys/class/net/*/address 2>/dev/null | grep -v "00:00:00:00:00:00" | tr '\n' ' ')
+
+    # Try to find primary physical interface (exclude docker, veth, lo, etc.)
+    PRIMARY_INTERFACE_REAL=$(ip route get 1.1.1.1 2>/dev/null | grep -oP 'dev \K\S+' | head -1)
+    if [ -n "$PRIMARY_INTERFACE_REAL" ] && [ -f "/sys/class/net/$PRIMARY_INTERFACE_REAL/address" ]; then
+        PRIMARY_MAC=$(cat "/sys/class/net/$PRIMARY_INTERFACE_REAL/address")
+        echo -e "   ${CHECK} Primary Interface: ${GREEN}$PRIMARY_INTERFACE_REAL${NC}"
+        echo -e "   ${CHECK} Primary MAC: ${GREEN}$PRIMARY_MAC${NC}"
+    else
+        # Fallback to first non-loopback MAC
+        PRIMARY_MAC=$(echo $ALL_MACS | awk '{print $1}')
+        echo -e "   ${CHECK} Primary MAC (fallback): ${GREEN}$PRIMARY_MAC${NC}"
+    fi
+
+    echo -e "   ${CHECK} All MACs: ${GREEN}$ALL_MACS${NC}"
 
     # Get primary IP address (try multiple methods)
     if command -v ip >/dev/null 2>&1; then
@@ -173,7 +184,8 @@ create_machine_config() {
 machine:
   hostname: "$HOSTNAME"
   primary_mac: "$PRIMARY_MAC"
-  all_macs: "$MAC_ADDRESSES"
+  primary_interface: "$PRIMARY_INTERFACE_REAL"
+  all_macs: "$ALL_MACS"
   nixos_version: "$NIXOS_VERSION"
   export_date: "$(date -Iseconds)"
   config_type: "$([ -f "$MACHINE_DIR/flake.nix" ] && echo "flakes" || echo "traditional")"
@@ -292,7 +304,7 @@ EOF
 ## Machine Information
 - **Hostname**: $HOSTNAME
 - **Primary MAC**: $PRIMARY_MAC
-- **All MACs**: $MAC_ADDRESSES
+- **All MACs**: $ALL_MACS
 - **Primary IP**: $PRIMARY_IP
 - **NixOS Version**: $NIXOS_VERSION
 - **Configuration Type**: $([ -f "$MACHINE_DIR/flake.nix" ] && echo "Flakes-based" || echo "Traditional")
