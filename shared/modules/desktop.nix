@@ -32,7 +32,7 @@
   # Desktop packages
   environment.systemPackages = with pkgs; [
     # Cinnamon-specific packages
-    cinnamon.nemo-with-extensions
+    nemo-with-extensions
     cinnamon-settings-daemon
 
     # Desktop utilities
