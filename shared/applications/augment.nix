@@ -70,7 +70,7 @@
     rebuild = "sudo nixos-rebuild switch --flake /mnt/network_repo/nixos";
     
     # File operations with consistent output
-    list = "${pkgs.exa}/bin/exa -la";
+    list = "${pkgs.eza}/bin/eza -la";
     search = "${pkgs.ripgrep}/bin/rg";
     
     # Network diagnostics
