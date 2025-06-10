@@ -50,14 +50,55 @@ REPO_URL="https://github.com/PadsterH2012/nixos.git"
 CONFIG_URL="https://raw.githubusercontent.com/PadsterH2012/nixos/main/hosts/$CURRENT_MAC/deploy.sh"
 
 echo -e "${BLUE}Checking for configuration...${NC}"
+echo -e "${BLUE}Looking for:${NC} $CONFIG_URL"
+
+# Check if deploy.sh exists
 if curl -s --head "$CONFIG_URL" | grep -q "200 OK"; then
-    echo -e "${GREEN}✅ Found configuration for MAC: $CURRENT_MAC${NC}"
+    echo -e "${GREEN}✅ Found deploy script for MAC: $CURRENT_MAC${NC}"
     echo
-    
+
     echo -e "${BLUE}Downloading and executing deploy script...${NC}"
     curl -sSL "$CONFIG_URL" | bash
 else
-    echo -e "${YELLOW}⚠️  No configuration found for MAC: $CURRENT_MAC${NC}"
+    # Check if the directory exists but no deploy.sh
+    DIR_URL="https://api.github.com/repos/PadsterH2012/nixos/contents/hosts/$CURRENT_MAC"
+    if curl -s "$DIR_URL" | grep -q '"name"'; then
+        echo -e "${YELLOW}⚠️  Configuration directory exists but no deploy.sh found${NC}"
+        echo -e "${BLUE}Creating deploy script and deploying...${NC}"
+
+        # Download configuration files and deploy manually
+        TEMP_DIR="/tmp/nixos-deploy-$CURRENT_MAC"
+        rm -rf "$TEMP_DIR"
+        mkdir -p "$TEMP_DIR"
+
+        # Clone just the specific directory
+        git clone --depth 1 --filter=blob:none --sparse https://github.com/PadsterH2012/nixos.git "$TEMP_DIR"
+        cd "$TEMP_DIR"
+        git sparse-checkout set "hosts/$CURRENT_MAC"
+
+        if [ -d "hosts/$CURRENT_MAC" ]; then
+            echo -e "${GREEN}✅ Found configuration files${NC}"
+
+            # Backup current config
+            sudo cp -r /etc/nixos /etc/nixos.backup.$(date +%Y%m%d-%H%M%S) 2>/dev/null || true
+
+            # Copy new configuration
+            sudo cp -r "hosts/$CURRENT_MAC"/* /etc/nixos/
+
+            # Rebuild
+            echo -e "${BLUE}🔧 Rebuilding NixOS...${NC}"
+            sudo nixos-rebuild switch
+
+            echo -e "${GREEN}✅ Deployment complete!${NC}"
+        else
+            echo -e "${RED}❌ Configuration directory not found${NC}"
+        fi
+
+        # Cleanup
+        rm -rf "$TEMP_DIR"
+    else
+        echo -e "${YELLOW}⚠️  No configuration found for MAC: $CURRENT_MAC${NC}"
+    fi
     echo
     echo -e "${BLUE}Available configurations:${NC}"
     
