@@ -33,18 +33,18 @@
   environment.systemPackages = with pkgs; [
     # Cinnamon-specific packages
     cinnamon.nemo-with-extensions
-    cinnamon.cinnamon-settings-daemon
-    
+    cinnamon-settings-daemon
+
     # Desktop utilities
     file-roller  # Archive manager
     gnome-calculator
-    gnome.gnome-screenshot
-    
+    gnome-screenshot
+
     # Media
     vlc
-    
+
     # System monitoring
-    gnome.gnome-system-monitor
+    gnome-system-monitor
   ];
 
   # Exclude some default Cinnamon packages to keep it streamlined

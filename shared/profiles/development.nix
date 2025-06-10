@@ -2,7 +2,7 @@
 # This is the master template for all development VMs
 # Based on the working configuration from bc:24:11:b3:15:31
 
-{ config, pkgs, pkgs-unstable, ... }:
+{ config, pkgs, pkgs-unstable, lib, ... }:
 
 {
   imports = [
@@ -97,10 +97,10 @@
     spice-vdagent
   ];
 
-  # Environment variables for development
+  # Environment variables for development (can be overridden by specific applications)
   environment.variables = {
-    EDITOR = "code";
-    BROWSER = "firefox";
+    EDITOR = lib.mkDefault "code";
+    BROWSER = lib.mkDefault "firefox";
   };
 
   # Shell aliases for consistency (terminal aliases handled by terminal.nix)
