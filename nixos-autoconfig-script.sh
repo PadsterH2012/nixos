@@ -292,28 +292,106 @@ check_git_config() {
     fi
 }
 
+# Function to detect available GitHub credentials
+detect_github_credentials() {
+    local detected_token=""
+
+    # 1. Check environment variable
+    if [[ -n "${GITHUB_TOKEN:-}" ]]; then
+        detected_token="$GITHUB_TOKEN"
+        log "Using GitHub token from GITHUB_TOKEN environment variable"
+        echo "$detected_token"
+        return 0
+    fi
+
+    # 2. Check GitHub CLI credentials
+    if command -v gh >/dev/null 2>&1; then
+        if gh auth status >/dev/null 2>&1; then
+            log "GitHub CLI (gh) is authenticated - will use gh for operations"
+            echo "gh-cli"
+            return 0
+        fi
+    fi
+
+    # 3. Check git credential helper
+    if git config --get credential.helper >/dev/null 2>&1; then
+        log "Git credential helper detected - will attempt to use stored credentials"
+        echo "git-credentials"
+        return 0
+    fi
+
+    # 4. Check SSH key authentication
+    if ssh -T git@github.com 2>&1 | grep -q "successfully authenticated"; then
+        log "SSH key authentication available for GitHub"
+        echo "ssh-key"
+        return 0
+    fi
+
+    # No credentials found
+    echo ""
+    return 1
+}
+
 # Function to upload configuration to GitHub
 upload_config() {
     local mac_addr="$1"
     local github_token="$2"
     local commit_message="$3"
-    
+
     log "Uploading configuration for MAC address: $mac_addr"
-    
+
     # Check git configuration
     check_git_config
-    
+
+    # Detect credentials if token not provided
+    if [[ -z "$github_token" ]]; then
+        local detected_creds
+        detected_creds=$(detect_github_credentials)
+
+        case "$detected_creds" in
+            "gh-cli")
+                log "Using GitHub CLI for authentication"
+                github_token="gh-cli"
+                ;;
+            "git-credentials"|"ssh-key")
+                log "Using existing git credentials"
+                github_token="git-credentials"
+                ;;
+            "")
+                warn "No GitHub credentials detected. Upload may fail."
+                warn "Consider: gh auth login, git config credential.helper, or --token option"
+                github_token=""
+                ;;
+            *)
+                # Actual token detected
+                github_token="$detected_creds"
+                ;;
+        esac
+    fi
+
     # Create temporary directory for git operations
     local git_temp_dir="/tmp/nixos-config-upload-$(date +%s)"
     mkdir -p "$git_temp_dir"
-    
+
     # Clone or update repository
     local repo_url
-    if [[ -n "$github_token" ]]; then
-        repo_url="https://${github_token}@github.com/${GITHUB_REPO}.git"
-    else
-        repo_url="https://github.com/${GITHUB_REPO}.git"
-    fi
+    case "$github_token" in
+        "gh-cli")
+            repo_url="https://github.com/${GITHUB_REPO}.git"
+            ;;
+        "git-credentials"|"ssh-key"|"")
+            # Use SSH if available, otherwise HTTPS
+            if [[ "$github_token" == "ssh-key" ]] || ssh -T git@github.com 2>&1 | grep -q "successfully authenticated"; then
+                repo_url="git@github.com:${GITHUB_REPO}.git"
+            else
+                repo_url="https://github.com/${GITHUB_REPO}.git"
+            fi
+            ;;
+        *)
+            # Explicit token provided
+            repo_url="https://${github_token}@github.com/${GITHUB_REPO}.git"
+            ;;
+    esac
     
     log "Cloning repository: $GITHUB_REPO"
     if ! git clone --depth 1 -b "$GITHUB_BRANCH" "$repo_url" "$git_temp_dir" 2>/dev/null; then
@@ -468,23 +546,34 @@ Options:
     -b, --branch BRANCH     Git branch to use (default: main)
     -m, --mac MAC          Manually specify MAC address
     -t, --token TOKEN      GitHub personal access token (for upload/sync)
+                           Optional - script auto-detects: gh CLI, git credentials, SSH keys
     -c, --commit MSG       Custom commit message (for upload/sync)
     -d, --dry-run          Show what would be done without applying
     -f, --force            Force upload even if no changes detected
     -h, --help             Show this help message
 
+Authentication Methods (auto-detected in order):
+    1. GITHUB_TOKEN environment variable
+    2. GitHub CLI (gh auth login)
+    3. Git credential helper (git config credential.helper)
+    4. SSH key authentication (ssh -T git@github.com)
+    5. Manual token via --token option
+
 Examples:
     # Download configuration
     $0 --repo myuser/nixos-configs
     $0 download --repo myuser/nixos-configs --branch development
-    
-    # Upload current configuration
-    $0 upload --repo myuser/nixos-configs --token ghp_xxxxxxxxxxxx
+
+    # Upload current configuration (auto-detects credentials)
+    $0 upload --repo myuser/nixos-configs
     $0 upload --repo myuser/nixos-configs --commit "Updated packages"
-    
-    # Bidirectional sync
-    $0 sync --repo myuser/nixos-configs --token ghp_xxxxxxxxxxxx
-    
+
+    # Upload with explicit token
+    $0 upload --repo myuser/nixos-configs --token ghp_xxxxxxxxxxxx
+
+    # Bidirectional sync (auto-detects credentials)
+    $0 sync --repo myuser/nixos-configs
+
     # Specify MAC address manually
     $0 --mac 00:11:22:33:44:55 --repo myuser/nixos-configs
 
@@ -492,6 +581,16 @@ Environment Variables:
     GITHUB_TOKEN           GitHub personal access token
     NIXOS_CONFIG_REPO      Default repository (format: username/repo-name)
     NIXOS_CONFIG_BRANCH    Default branch
+
+Setup Authentication:
+    # Option 1: GitHub CLI (recommended)
+    gh auth login
+
+    # Option 2: Environment variable
+    export GITHUB_TOKEN=ghp_xxxxxxxxxxxx
+
+    # Option 3: Git credential helper
+    git config --global credential.helper store
 
 EOF
 }
@@ -601,10 +700,9 @@ main() {
                 exit 0
             fi
             
-            # Check for required upload dependencies
+            # Auto-detect credentials for upload
             if [[ "$COMMAND" == "upload" ]] && [[ -z "$GITHUB_TOKEN" ]]; then
-                warn "No GitHub token provided. Attempting to upload using existing git credentials..."
-                warn "If this fails, provide a token with --token or set GITHUB_TOKEN environment variable"
+                log "No explicit token provided - auto-detecting GitHub credentials..."
             fi
             
             upload_config "$mac_addr" "$GITHUB_TOKEN" "$COMMIT_MESSAGE"
