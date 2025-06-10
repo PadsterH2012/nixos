@@ -1,5 +1,5 @@
 # Identity configuration for hl-dev-nixos-builder
-# NixOS build server - Static IP 10.202.28.180
+# NixOS build server - Static IP 10.202.28.170
 
 { config, pkgs, ... }:
 
@@ -13,7 +13,7 @@
     
     # Static IP configuration
     interfaces.ens18.ipv4.addresses = [{
-      address = "10.202.28.180";
+      address = "10.202.28.170";
       prefixLength = 24;
     }];
     
@@ -34,7 +34,7 @@
     # Custom session script to show identity
     extraSessionCommands = ''
       # Show machine identity in notification
-      ${pkgs.libnotify}/bin/notify-send "NixOS Build Server" "Machine: hl-dev-nixos-builder\nIP: 10.202.28.180\nRole: NixOS Build & CI/CD" --icon=computer
+      ${pkgs.libnotify}/bin/notify-send "NixOS Build Server" "Machine: hl-dev-nixos-builder\nIP: 10.202.28.170\nRole: NixOS Build & CI/CD" --icon=computer
     '';
   };
 
@@ -42,7 +42,7 @@
   environment.variables = {
     HOSTNAME_DISPLAY = "hl-dev-nixos-builder";
     VM_ROLE = "nixos-builder";
-    VM_IP = "10.202.28.180";
+    VM_IP = "10.202.28.170";
     BUILD_SERVER = "true";
   };
 
