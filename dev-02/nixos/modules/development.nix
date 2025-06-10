@@ -35,6 +35,17 @@
     zip
     file
     which
+
+    # Enhanced terminal tools for Augment Code
+    jq          # JSON processing
+    exa         # Better ls
+    bat         # Better cat with syntax highlighting
+    fd          # Better find
+    ripgrep     # Better grep
+
+    # Terminal fonts
+    jetbrains-mono
+    fira-code
     
     # NFS utilities for mapped drives
     nfs-utils
@@ -121,6 +132,20 @@
     node-version = "${pkgs.nodejs}/bin/node --version";
     npm-version = "${pkgs.nodePackages.npm}/bin/npm --version";
     npx-version = "${pkgs.nodePackages.npm}/bin/npx --version";
+
+    # Enhanced terminal tools (AI agent compatible)
+    ll = "${pkgs.exa}/bin/exa -la --git";
+    la = "${pkgs.exa}/bin/exa -a";
+    ls = "${pkgs.exa}/bin/exa";
+    tree = "${pkgs.exa}/bin/exa --tree";
+    cat = "${pkgs.bat}/bin/bat --style=plain --paging=never";
+    find = "${pkgs.fd}/bin/fd";
+    grep = "${pkgs.ripgrep}/bin/rg";
+
+    # Development shortcuts
+    nixos-test = "sudo nixos-rebuild test";
+    nixos-switch = "sudo nixos-rebuild switch";
+    nixos-rollback = "sudo nixos-rebuild switch --rollback";
 
     # VS Code options for development (code alias is defined in applications/vscode.nix)
     code-native = "${pkgs.vscode}/bin/code";  # Native VS Code (full system access)

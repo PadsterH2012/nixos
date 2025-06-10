@@ -222,6 +222,73 @@ create_machine_config() {
         echo -e "   ${INFO} Checked: $CONFIG_SOURCE, $HOST_CONFIG_SOURCE"
     fi
     
+    # Create terminal enhancement module
+    cat > "$MACHINE_DIR/modules/terminal-enhancements.nix" << EOF
+# Terminal enhancements for Augment Code and VS Code compatibility
+# Optimized for AI agent interaction and development workflow
+
+{ config, pkgs, ... }:
+
+{
+  # Enhanced terminal tools for AI agents and development
+  environment.systemPackages = with pkgs; [
+    # Core tools Augment Code uses
+    jq          # JSON processing
+    tree        # Directory visualization
+    file        # File type detection
+    which       # Command location
+
+    # Enhanced versions (aliased for compatibility)
+    exa         # Better ls
+    bat         # Better cat with syntax highlighting
+    fd          # Better find
+    ripgrep     # Better grep
+
+    # Terminal fonts for VS Code
+    jetbrains-mono
+    fira-code
+  ];
+
+  # Aliases that work well with AI agents
+  environment.shellAliases = {
+    # Enhanced tools (keeping originals available)
+    ll = "exa -la --git";
+    la = "exa -a";
+    ls = "exa";
+    tree = "exa --tree";
+    cat = "bat --style=plain --paging=never";
+    find = "fd";
+    grep = "rg";
+
+    # Development shortcuts
+    code-logs = "journalctl --user -f -u flatpak-session-helper";
+    nixos-test = "sudo nixos-rebuild test";
+    nixos-switch = "sudo nixos-rebuild switch";
+  };
+
+  # Bash configuration for AI agent compatibility
+  programs.bash = {
+    enableCompletion = true;
+    shellInit = ''
+      # Ensure consistent environment for AI agents
+      export EDITOR=\${EDITOR:-nano}
+      export PAGER=\${PAGER:-less}
+
+      # Enhanced prompt for better readability
+      export PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+
+      # History settings for better AI context
+      export HISTSIZE=10000
+      export HISTFILESIZE=20000
+      export HISTCONTROL=ignoredups:erasedups
+
+      # Append to history file
+      shopt -s histappend
+    '';
+  };
+}
+EOF
+
     # Create machine info file
     cat > "$MACHINE_DIR/machine-info.yaml" << EOF
 # Machine Information for $HOSTNAME

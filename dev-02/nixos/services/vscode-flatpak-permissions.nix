@@ -56,10 +56,15 @@
         # Grant device access
         ${pkgs.flatpak}/bin/flatpak override --user --device=all com.visualstudio.code || true
         
-        # Set up environment for Node.js access
-        ${pkgs.flatpak}/bin/flatpak override --user --env=PATH="${pkgs.nodejs}/bin:/app/bin:/usr/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin" com.visualstudio.code || true
+        # Set up environment for Node.js access and terminal tools
+        ${pkgs.flatpak}/bin/flatpak override --user --env=PATH="${pkgs.nodejs}/bin:${pkgs.exa}/bin:${pkgs.bat}/bin:${pkgs.fd}/bin:${pkgs.ripgrep}/bin:${pkgs.jq}/bin:/app/bin:/usr/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin" com.visualstudio.code || true
         ${pkgs.flatpak}/bin/flatpak override --user --env=NODE_PATH="${pkgs.nodejs}/lib/node_modules" com.visualstudio.code || true
         ${pkgs.flatpak}/bin/flatpak override --user --env=NPM_CONFIG_PREFIX="/home/paddy/.var/app/com.visualstudio.code/data/node_modules" com.visualstudio.code || true
+
+        # Terminal and editor environment for Augment Code
+        ${pkgs.flatpak}/bin/flatpak override --user --env=EDITOR="code --wait" com.visualstudio.code || true
+        ${pkgs.flatpak}/bin/flatpak override --user --env=PAGER="less" com.visualstudio.code || true
+        ${pkgs.flatpak}/bin/flatpak override --user --env=TERM="xterm-256color" com.visualstudio.code || true
         
         # Grant system bus access for development tools
         ${pkgs.flatpak}/bin/flatpak override --user --system-talk-name=org.freedesktop.systemd1 com.visualstudio.code || true

@@ -26,6 +26,7 @@
     # Application configurations
     ./applications/vscode.nix
     ./applications/vscode-extensions.nix
+    ./applications/vscode-terminal-settings.nix
     ./applications/mcp-config.nix
     ./applications/augment-settings.nix
     ./applications/git.nix
