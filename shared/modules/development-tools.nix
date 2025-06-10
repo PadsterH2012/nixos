@@ -55,7 +55,7 @@
 
   # Enhanced bash configuration for AI agent compatibility
   programs.bash = {
-    enableCompletion = true;
+    completion.enable = true;
     shellInit = ''
       # Ensure Node.js is in PATH for all bash sessions
       export PATH="${pkgs.nodejs}/bin:${pkgs.nodePackages.npm}/bin:$PATH"

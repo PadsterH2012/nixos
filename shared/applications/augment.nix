@@ -106,8 +106,8 @@
     '';
   };
 
-  # MCP server configurations for AI agents
-  system.activationScripts.mcp-server-configs = ''
+  # MCP server configurations for AI agents (Augment-specific)
+  system.activationScripts.augment-mcp-configs = ''
     # Create MCP configuration directories
     mkdir -p /home/paddy/.config/augment
     mkdir -p /home/paddy/.config/claude-desktop

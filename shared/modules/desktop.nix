@@ -36,8 +36,8 @@
     cinnamon.cinnamon-settings-daemon
     
     # Desktop utilities
-    gnome.file-roller  # Archive manager
-    gnome.gnome-calculator
+    file-roller  # Archive manager
+    gnome-calculator
     gnome.gnome-screenshot
     
     # Media

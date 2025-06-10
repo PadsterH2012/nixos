@@ -70,7 +70,7 @@
 
   # Configure bash for better terminal experience
   programs.bash = {
-    enableCompletion = true;
+    completion.enable = true;
     
     # Additional bash configuration
     shellInit = ''

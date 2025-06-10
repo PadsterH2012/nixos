@@ -25,8 +25,8 @@
   services.qemuGuest.enable = true;
   services.spice-vdagentd.enable = true;
 
-  # Enable OpenGL for desktop environment
-  hardware.opengl = {
+  # Enable graphics for desktop environment
+  hardware.graphics = {
     enable = true;
     # driSupport and driSupport32Bit are deprecated and enabled by default
   };
