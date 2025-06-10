@@ -280,7 +280,21 @@ echo "🚀 Deploying NixOS configuration..."
 EXPECTED_HOSTNAME="$HOSTNAME"
 EXPECTED_MAC="$PRIMARY_MAC"
 CURRENT_HOSTNAME=\$(hostname)
-CURRENT_MAC=\$(cat /sys/class/net/*/address 2>/dev/null | grep -v "00:00:00:00:00:00" | head -1)
+CURRENT_MAC=\$(
+    # Try to get MAC from primary interface first
+    if command -v ip >/dev/null 2>&1; then
+        PRIMARY_IFACE=\$(ip route get 1.1.1.1 2>/dev/null | grep -oP 'dev \K\S+' | head -1)
+        if [ -n "\$PRIMARY_IFACE" ] && [ -f "/sys/class/net/\$PRIMARY_IFACE/address" ]; then
+            cat "/sys/class/net/\$PRIMARY_IFACE/address"
+        else
+            # Fallback: exclude common virtual interfaces
+            cat /sys/class/net/*/address 2>/dev/null | grep -v "00:00:00:00:00:00" | grep -v "02:42:" | head -1
+        fi
+    else
+        # Fallback: exclude common virtual interfaces
+        cat /sys/class/net/*/address 2>/dev/null | grep -v "00:00:00:00:00:00" | grep -v "02:42:" | head -1
+    fi
+)
 
 if [ "\$CURRENT_HOSTNAME" != "\$EXPECTED_HOSTNAME" ]; then
     echo "⚠️  Warning: Expected hostname '\$EXPECTED_HOSTNAME' but current is '\$CURRENT_HOSTNAME'"
