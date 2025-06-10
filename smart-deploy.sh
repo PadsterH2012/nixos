@@ -26,19 +26,22 @@ get_primary_mac() {
         # Try to get MAC from primary interface first
         PRIMARY_IFACE=$(ip route get 1.1.1.1 2>/dev/null | grep -oP 'dev \K\S+' | head -1)
         if [ -n "$PRIMARY_IFACE" ] && [ -f "/sys/class/net/$PRIMARY_IFACE/address" ]; then
-            echo -e "${BLUE}Primary interface:${NC} $PRIMARY_IFACE"
             cat "/sys/class/net/$PRIMARY_IFACE/address"
         else
             # Fallback: exclude common virtual interfaces
             cat /sys/class/net/*/address 2>/dev/null | grep -v "00:00:00:00:00:00" | grep -v "02:42:" | head -1
         fi
     else
-        # Fallback: exclude common virtual interfaces  
+        # Fallback: exclude common virtual interfaces
         cat /sys/class/net/*/address 2>/dev/null | grep -v "00:00:00:00:00:00" | grep -v "02:42:" | head -1
     fi
 }
 
+# Get primary interface info
+PRIMARY_IFACE=$(ip route get 1.1.1.1 2>/dev/null | grep -oP 'dev \K\S+' | head -1)
 CURRENT_MAC=$(get_primary_mac)
+
+echo -e "${BLUE}Primary interface:${NC} $PRIMARY_IFACE"
 echo -e "${BLUE}Primary MAC:${NC} $CURRENT_MAC"
 echo
 
