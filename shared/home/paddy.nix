@@ -53,9 +53,9 @@
       export BROWSER="firefox"
       
       # Development aliases
-      alias ll='exa -la --git'
-      alias la='exa -a'
-      alias tree='exa --tree'
+      alias ll='eza -la --git'
+      alias la='eza -a'
+      alias tree='eza --tree'
       
       # Quick navigation
       alias ..='cd ..'

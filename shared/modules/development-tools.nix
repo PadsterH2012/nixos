@@ -18,7 +18,7 @@
     
     # Enhanced terminal tools for AI agents
     jq          # JSON processing
-    exa         # Better ls
+    eza         # Better ls
     bat         # Better cat with syntax highlighting
     fd          # Better find
     ripgrep     # Better grep
@@ -61,7 +61,7 @@
       export PATH="${pkgs.nodejs}/bin:${pkgs.nodePackages.npm}/bin:$PATH"
       
       # Enhanced terminal tools in PATH
-      export PATH="${pkgs.exa}/bin:${pkgs.bat}/bin:${pkgs.fd}/bin:${pkgs.ripgrep}/bin:${pkgs.jq}/bin:$PATH"
+      export PATH="${pkgs.eza}/bin:${pkgs.bat}/bin:${pkgs.fd}/bin:${pkgs.ripgrep}/bin:${pkgs.jq}/bin:$PATH"
       
       # Colorized bash prompt: green user@host, blue path
       export PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
@@ -97,10 +97,10 @@
     npx-version = "${pkgs.nodePackages.npm}/bin/npx --version";
     
     # Enhanced terminal tools (AI agent compatible)
-    ll = "${pkgs.exa}/bin/exa -la --git";
-    la = "${pkgs.exa}/bin/exa -a";
-    ls = "${pkgs.exa}/bin/exa";
-    tree = "${pkgs.exa}/bin/exa --tree";
+    ll = "${pkgs.eza}/bin/eza -la --git";
+    la = "${pkgs.eza}/bin/eza -a";
+    ls = "${pkgs.eza}/bin/eza";
+    tree = "${pkgs.eza}/bin/eza --tree";
     cat = "${pkgs.bat}/bin/bat --style=plain --paging=never";
     find = "${pkgs.fd}/bin/fd";
     grep = "${pkgs.ripgrep}/bin/rg";

@@ -54,7 +54,7 @@
         ${pkgs.flatpak}/bin/flatpak override --user --device=all com.visualstudio.code || true
         
         # Set up environment for Node.js access and terminal tools
-        ${pkgs.flatpak}/bin/flatpak override --user --env=PATH="${pkgs.nodejs}/bin:${pkgs.exa}/bin:${pkgs.bat}/bin:${pkgs.fd}/bin:${pkgs.ripgrep}/bin:${pkgs.jq}/bin:/app/bin:/usr/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin" com.visualstudio.code || true
+        ${pkgs.flatpak}/bin/flatpak override --user --env=PATH="${pkgs.nodejs}/bin:${pkgs.eza}/bin:${pkgs.bat}/bin:${pkgs.fd}/bin:${pkgs.ripgrep}/bin:${pkgs.jq}/bin:/app/bin:/usr/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin" com.visualstudio.code || true
         ${pkgs.flatpak}/bin/flatpak override --user --env=NODE_PATH="${pkgs.nodejs}/lib/node_modules" com.visualstudio.code || true
         ${pkgs.flatpak}/bin/flatpak override --user --env=NPM_CONFIG_PREFIX="/home/paddy/.var/app/com.visualstudio.code/data/node_modules" com.visualstudio.code || true
         
