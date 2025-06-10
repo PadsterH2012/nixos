@@ -36,6 +36,11 @@ HOST_CONFIG_SOURCE="/run/host/etc/nixos"  # For Flatpak containers
 GITHUB_USERNAME="${GITHUB_USERNAME:-PadsterH2012}"
 GITHUB_TOKEN="${GITHUB_TOKEN:-}"  # Set via environment variable for security
 
+# Try to load token from config file if not set
+if [ -z "$GITHUB_TOKEN" ] && [ -f "$HOME/.nixos-export-config" ]; then
+    source "$HOME/.nixos-export-config"
+fi
+
 print_header() {
     echo -e "${PURPLE}╔══════════════════════════════════════════════════════════════╗${NC}"
     echo -e "${PURPLE}║                                                              ║${NC}"
