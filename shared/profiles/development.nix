@@ -103,16 +103,12 @@
     BROWSER = "firefox";
   };
 
-  # Shell aliases for consistency
+  # Shell aliases for consistency (terminal aliases handled by terminal.nix)
   environment.shellAliases = {
     # Flake management
     rebuild = "sudo nixos-rebuild switch --flake /mnt/network_repo/nixos";
     update-flake = "cd /mnt/network_repo/nixos && nix flake update";
-    
-    # System shortcuts
-    ll = "ls -la";
-    la = "ls -a";
-    
+
     # Development shortcuts
     nixos-test = "sudo nixos-rebuild test --flake /mnt/network_repo/nixos";
     nixos-switch = "sudo nixos-rebuild switch --flake /mnt/network_repo/nixos";
