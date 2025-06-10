@@ -1,15 +1,15 @@
 # Identity configuration for hl-dev-nixos-builder
 # NixOS build server - Static IP 10.202.28.170
 
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   # Network configuration with static IP
   networking = {
     hostName = "hl-dev-nixos-builder";
-    
-    # Disable NetworkManager for static IP configuration
-    networkmanager.enable = false;
+
+    # Disable NetworkManager for static IP configuration (override shared setting)
+    networkmanager.enable = lib.mkForce false;
     
     # Static IP configuration
     interfaces.ens18.ipv4.addresses = [{
