@@ -186,11 +186,19 @@ configure_system() {
     log "Looking for configurations for MAC address: $mac_addr"
     
     # Try different configuration patterns
+    local hostname=$(hostname)
     local config_patterns=(
+        "hosts/${hostname}-${mac_addr}/configuration.nix"
+        "hosts/${hostname}/configuration.nix"
         "hosts/${mac_addr}/configuration.nix"
+        "hosts/${hostname}-${mac_addr}/default.nix"
+        "hosts/${hostname}/default.nix"
         "hosts/${mac_addr}/default.nix"
+        "machines/${hostname}.nix"
         "machines/${mac_addr}.nix"
+        "configs/${hostname}/configuration.nix"
         "configs/${mac_addr}/configuration.nix"
+        "${hostname}.nix"
         "${mac_addr}.nix"
     )
     
@@ -406,10 +414,44 @@ upload_config() {
     fi
     
     cd "$git_temp_dir"
-    
-    # Create host directory structure
-    local host_dir="hosts/${mac_addr}"
-    mkdir -p "$host_dir"
+
+    # Create host directory structure - check for existing configs first
+    local hostname=$(hostname)
+    local host_dir=""
+    local found_existing=false
+
+    # Look for existing configuration by MAC address (primary identifier)
+    for existing_dir in hosts/*-${mac_addr} hosts/${mac_addr}; do
+        if [[ -d "$existing_dir" ]]; then
+            host_dir="$existing_dir"
+            found_existing=true
+            log "Found existing configuration: $existing_dir"
+
+            # Check if hostname has changed
+            local old_hostname=$(basename "$existing_dir" | sed "s/-${mac_addr}$//" | sed "s/${mac_addr}//")
+            if [[ "$old_hostname" != "$hostname" && "$old_hostname" != "" ]]; then
+                log "Hostname changed from '$old_hostname' to '$hostname'"
+                local new_host_dir="hosts/${hostname}-${mac_addr}"
+
+                # Move to new directory with updated hostname
+                if [[ "$existing_dir" != "$new_host_dir" ]]; then
+                    log "Renaming directory to reflect new hostname: $new_host_dir"
+                    git mv "$existing_dir" "$new_host_dir" 2>/dev/null || mv "$existing_dir" "$new_host_dir"
+                    host_dir="$new_host_dir"
+                fi
+            fi
+            break
+        fi
+    done
+
+    # If no existing config found, create new directory
+    if [[ "$found_existing" == false ]]; then
+        host_dir="hosts/${hostname}-${mac_addr}"
+        mkdir -p "$host_dir"
+        log "Creating new configuration directory: $host_dir"
+    else
+        log "Updating existing configuration in: $host_dir"
+    fi
     
     # Copy configuration files
     log "Copying configuration files..."
@@ -497,10 +539,11 @@ generate_host_readme() {
     local mac_addr="$2"
     
     cat > "$host_dir/README.md" << EOF
-# NixOS Configuration for $mac_addr
+# NixOS Configuration for $(hostname)
 
 **Last Updated:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")
 **Hostname:** $(hostname)
+**MAC Address:** $mac_addr
 **Architecture:** $(uname -m)
 **Kernel:** $(uname -r)
 
