@@ -66,9 +66,16 @@ Each VM has unique `identity.nix` with:
 # Deploy to current machine
 sudo nixos-rebuild switch --flake .#nixos-dev-cinnamon
 
-# Deploy to specific development VM
-sudo nixos-rebuild switch --flake .#dev-vm-01
-sudo nixos-rebuild switch --flake .#dev-vm-02
+# Deploy to specialized development VMs
+sudo nixos-rebuild switch --flake .#hl-dev-nixos-builder
+sudo nixos-rebuild switch --flake .#hl-dev-ansible
+sudo nixos-rebuild switch --flake .#hl-dev-mcp-proxy
+sudo nixos-rebuild switch --flake .#hl-dev-rpger
+sudo nixos-rebuild switch --flake .#hl-dev-adhd-calendar
+sudo nixos-rebuild switch --flake .#hl-dev-rpger-extractor
+sudo nixos-rebuild switch --flake .#hl-dev-instructor
+sudo nixos-rebuild switch --flake .#hl-dev-rhel-satellite
+sudo nixos-rebuild switch --flake .#hl-pad-nixos-main
 
 # Test configuration without switching
 sudo nixos-rebuild test --flake .#nixos-dev-cinnamon
@@ -77,11 +84,32 @@ sudo nixos-rebuild test --flake .#nixos-dev-cinnamon
 ### **Remote Deployment**
 ```bash
 # Deploy to remote VM
-ssh paddy@dev-vm-01 "cd /mnt/network_repo/nixos && sudo nixos-rebuild switch --flake .#dev-vm-01"
+ssh paddy@hl-dev-nixos-builder "cd /mnt/network_repo/nixos && sudo nixos-rebuild switch --flake .#hl-dev-nixos-builder"
 
 # Deploy to all VMs (using included script)
 nix run .#deploy-all
 ```
+
+## 🌐 **Network Configuration**
+
+All specialized development VMs use static IP addresses:
+
+| Hostname | IP Address | Role | Purpose |
+|----------|------------|------|---------|
+| `hl-dev-nixos-builder` | 10.202.28.180 | NixOS Build Server | CI/CD, package building |
+| `hl-dev-ansible` | 10.202.28.181 | Ansible Automation | Infrastructure management |
+| `hl-dev-mcp-proxy` | 10.202.28.182 | MCP Proxy Services | Model Context Protocol |
+| `hl-dev-rpger` | 10.202.28.183 | RPG Development | Game development tools |
+| `hl-dev-adhd-calendar` | 10.202.28.184 | ADHD Calendar Tools | Productivity & scheduling |
+| `hl-dev-rpger-extractor` | 10.202.28.185 | RPG Data Extraction | Data processing & scraping |
+| `hl-dev-instructor` | 10.202.28.186 | AI Instruction Tools | AI training & development |
+| `hl-dev-rhel-satellite` | 10.202.28.187 | RHEL Satellite Mgmt | Enterprise management |
+| `hl-pad-nixos-main` | 10.202.28.188 | Main Workstation | Primary development |
+
+**Network Settings:**
+- Gateway: `10.202.28.1`
+- DNS Servers: `10.202.28.50`, `10.202.28.51`
+- Subnet: `10.202.28.0/24`
 
 ### **Update and Maintenance**
 ```bash
@@ -100,27 +128,27 @@ nix develop
 
 ## 🆕 Adding New Development VMs
 
-### **Method 1: Copy Template**
+### **Method 1: Copy Existing Host**
 ```bash
-# Copy template for new VM
-cp -r hosts/dev-vm-01 hosts/dev-vm-09
+# Copy existing host configuration for new VM
+cp -r hosts/hl-dev-nixos-builder hosts/hl-new-machine
 
 # Edit identity configuration
-nano hosts/dev-vm-09/identity.nix
-# Change hostname to "dev-vm-09"
-# Update IP address if using static
-# Update VM_NUMBER variable
+nano hosts/hl-new-machine/identity.nix
+# Change hostname to "hl-new-machine"
+# Update IP address (next available: 10.202.28.189+)
+# Update VM_ROLE and purpose variables
 
 # Update hardware configuration with actual UUIDs
-nano hosts/dev-vm-09/hardware-configuration.nix
+nano hosts/hl-new-machine/hardware-configuration.nix
 # Replace REPLACE-WITH-ACTUAL-UUID with real values from new VM
 
 # Add to flake.nix
 nano flake.nix
-# Add "dev-vm-09" = mkNixosConfiguration "dev-vm-09"; to nixosConfigurations
+# Add "hl-new-machine" = mkNixosConfiguration "hl-new-machine"; to nixosConfigurations
 
 # Deploy
-sudo nixos-rebuild switch --flake .#dev-vm-09
+sudo nixos-rebuild switch --flake .#hl-new-machine
 ```
 
 ### **Method 2: Generate Hardware Config**

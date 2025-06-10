@@ -68,16 +68,17 @@
         # Current working machines
         "nixos-dev-cinnamon" = mkNixosConfiguration "nixos-dev-cinnamon";
         "nixos-test-vm" = mkNixosConfiguration "nixos-test-vm";
-        
-        # Future development VMs (ready to deploy)
-        "dev-vm-01" = mkNixosConfiguration "dev-vm-01";
-        "dev-vm-02" = mkNixosConfiguration "dev-vm-02";
-        "dev-vm-03" = mkNixosConfiguration "dev-vm-03";
-        "dev-vm-04" = mkNixosConfiguration "dev-vm-04";
-        "dev-vm-05" = mkNixosConfiguration "dev-vm-05";
-        "dev-vm-06" = mkNixosConfiguration "dev-vm-06";
-        "dev-vm-07" = mkNixosConfiguration "dev-vm-07";
-        "dev-vm-08" = mkNixosConfiguration "dev-vm-08";
+
+        # Specialized development VMs with static IPs (10.202.28.180+)
+        "hl-dev-nixos-builder" = mkNixosConfiguration "hl-dev-nixos-builder";      # 10.202.28.180
+        "hl-dev-ansible" = mkNixosConfiguration "hl-dev-ansible";                  # 10.202.28.181
+        "hl-dev-mcp-proxy" = mkNixosConfiguration "hl-dev-mcp-proxy";              # 10.202.28.182
+        "hl-dev-rpger" = mkNixosConfiguration "hl-dev-rpger";                      # 10.202.28.183
+        "hl-dev-adhd-calendar" = mkNixosConfiguration "hl-dev-adhd-calendar";      # 10.202.28.184
+        "hl-dev-rpger-extractor" = mkNixosConfiguration "hl-dev-rpger-extractor";  # 10.202.28.185
+        "hl-dev-instructor" = mkNixosConfiguration "hl-dev-instructor";            # 10.202.28.186
+        "hl-dev-rhel-satellite" = mkNixosConfiguration "hl-dev-rhel-satellite";    # 10.202.28.187
+        "hl-pad-nixos-main" = mkNixosConfiguration "hl-pad-nixos-main";            # 10.202.28.188
       };
       
       # Development shell for working with this flake
@@ -96,9 +97,19 @@
           echo "  nix flake check"
           echo ""
           echo "Available hosts:"
-          echo "  nixos-dev-cinnamon (current)"
-          echo "  nixos-test-vm"
-          echo "  dev-vm-01 through dev-vm-08"
+          echo "  nixos-dev-cinnamon (current working machine)"
+          echo "  nixos-test-vm (test machine)"
+          echo ""
+          echo "Specialized Development VMs (Static IPs 10.202.28.180+):"
+          echo "  hl-dev-nixos-builder    (10.202.28.180) - NixOS build server"
+          echo "  hl-dev-ansible          (10.202.28.181) - Ansible automation"
+          echo "  hl-dev-mcp-proxy        (10.202.28.182) - MCP proxy services"
+          echo "  hl-dev-rpger            (10.202.28.183) - RPG development"
+          echo "  hl-dev-adhd-calendar    (10.202.28.184) - ADHD calendar tools"
+          echo "  hl-dev-rpger-extractor  (10.202.28.185) - RPG data extraction"
+          echo "  hl-dev-instructor       (10.202.28.186) - AI instruction tools"
+          echo "  hl-dev-rhel-satellite   (10.202.28.187) - RHEL satellite mgmt"
+          echo "  hl-pad-nixos-main       (10.202.28.188) - Main development"
         '';
       };
       
@@ -107,9 +118,19 @@
         deploy-all = pkgs.writeShellScriptBin "deploy-all" ''
           #!/bin/bash
           echo "🚀 Deploying to all development VMs..."
-          
-          HOSTS=("dev-vm-01" "dev-vm-02" "dev-vm-03" "dev-vm-04" "dev-vm-05" "dev-vm-06" "dev-vm-07" "dev-vm-08")
-          
+
+          HOSTS=(
+            "hl-dev-nixos-builder"
+            "hl-dev-ansible"
+            "hl-dev-mcp-proxy"
+            "hl-dev-rpger"
+            "hl-dev-adhd-calendar"
+            "hl-dev-rpger-extractor"
+            "hl-dev-instructor"
+            "hl-dev-rhel-satellite"
+            "hl-pad-nixos-main"
+          )
+
           for host in "''${HOSTS[@]}"; do
             echo "📡 Deploying to $host..."
             if ping -c 1 "$host" >/dev/null 2>&1; then
@@ -118,7 +139,7 @@
               echo "⚠️  $host is not reachable, skipping..."
             fi
           done
-          
+
           echo "✅ Deployment complete!"
         '';
       };
