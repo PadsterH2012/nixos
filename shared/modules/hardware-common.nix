@@ -28,8 +28,7 @@
   # Enable OpenGL for desktop environment
   hardware.opengl = {
     enable = true;
-    driSupport = true;
-    driSupport32Bit = true;
+    # driSupport and driSupport32Bit are deprecated and enabled by default
   };
 
   # Power management for VMs
