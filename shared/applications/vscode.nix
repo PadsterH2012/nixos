@@ -4,24 +4,17 @@
 { config, pkgs, ... }:
 
 {
-  # Install VS Code variants and basic extensions
+  # Install VS Code variants (extensions installed via Flatpak or manually)
   environment.systemPackages = with pkgs; [
     # VS Code variants
     vscode          # Native VS Code
     vscode-fhs      # FHS-compatible VS Code
-  ] ++ (with pkgs.vscode-extensions; [
-    # Essential extensions (only well-supported ones)
-    ms-python.python
 
-    # Git integration
-    eamodio.gitlens
-
-    # Language support (basic)
-    ms-vscode.vscode-json
-
-    # Development tools
-    ms-vscode.vscode-eslint
-  ]);
+    # Note: VS Code extensions are better installed via:
+    # 1. Flatpak VS Code (for OAuth support)
+    # 2. VS Code marketplace (for latest versions)
+    # 3. Manual installation as needed
+  ];
 
   # Shell aliases for VS Code variants
   environment.shellAliases = {

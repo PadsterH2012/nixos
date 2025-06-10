@@ -50,7 +50,7 @@
   # Exclude some default Cinnamon packages to keep it streamlined
   environment.cinnamon.excludePackages = with pkgs; [
     # Remove some default applications we don't need for development
-    gnome.gnome-terminal  # We'll use the integrated terminal in VS Code
+    gnome-terminal  # We'll use the integrated terminal in VS Code
     hexchat
   ];
 
