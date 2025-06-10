@@ -32,6 +32,10 @@ REPO_DIR="/tmp/nixos-export"
 CONFIG_SOURCE="/etc/nixos"
 HOST_CONFIG_SOURCE="/run/host/etc/nixos"  # For Flatpak containers
 
+# GitHub Authentication (set these as environment variables or edit here)
+GITHUB_USERNAME="${GITHUB_USERNAME:-PadsterH2012}"
+GITHUB_TOKEN="${GITHUB_TOKEN:-}"  # Set via environment variable for security
+
 print_header() {
     echo -e "${PURPLE}╔══════════════════════════════════════════════════════════════╗${NC}"
     echo -e "${PURPLE}║                                                              ║${NC}"
@@ -108,22 +112,37 @@ get_system_info() {
 
 clone_or_update_repo() {
     echo -e "${BLUE}${INFO} Setting up Git repository...${NC}"
-    
+
     # Clean up any existing directory
     rm -rf "$REPO_DIR"
-    
+
+    # Prepare repository URL with authentication if token is provided
+    local auth_url="$REPO_URL"
+    if [ -n "$GITHUB_TOKEN" ]; then
+        # Convert https://github.com/user/repo.git to https://username:token@github.com/user/repo.git
+        auth_url=$(echo "$REPO_URL" | sed "s|https://github.com/|https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/|")
+        echo -e "   ${INFO} Using authenticated access"
+    else
+        echo -e "   ${WARNING} No GitHub token provided - may fail for private repositories"
+        echo -e "   ${INFO} Set GITHUB_TOKEN environment variable for authentication"
+    fi
+
     # Clone the repository
-    if git clone "$REPO_URL" "$REPO_DIR" 2>/dev/null; then
+    if git clone "$auth_url" "$REPO_DIR" 2>/dev/null; then
         echo -e "   ${CHECK} Repository cloned successfully"
     else
         echo -e "   ${CROSS} Failed to clone repository"
+        if [ -z "$GITHUB_TOKEN" ]; then
+            echo -e "   ${INFO} For private repositories, set your GitHub token:"
+            echo -e "   ${CYAN}export GITHUB_TOKEN='your_personal_access_token'${NC}"
+        fi
         echo -e "   ${INFO} Creating new repository structure..."
         mkdir -p "$REPO_DIR"
         cd "$REPO_DIR"
         git init
         git remote add origin "$REPO_URL" 2>/dev/null || true
     fi
-    
+
     cd "$REPO_DIR"
     echo
 }
@@ -407,10 +426,25 @@ Network:
     echo -e "   ${CHECK} Changes committed"
     
     # Push to repository
+    local push_success=false
+
+    if [ -n "$GITHUB_TOKEN" ]; then
+        # Set up authenticated remote for push
+        local auth_url=$(echo "$REPO_URL" | sed "s|https://github.com/|https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/|")
+        git remote set-url origin "$auth_url" 2>/dev/null || true
+    fi
+
     if git push origin main 2>/dev/null; then
         echo -e "   ${CHECK} Changes pushed to repository"
+        push_success=true
     else
-        echo -e "   ${WARNING} Failed to push changes (may need authentication)"
+        echo -e "   ${WARNING} Failed to push changes"
+        if [ -z "$GITHUB_TOKEN" ]; then
+            echo -e "   ${INFO} For private repositories, set your GitHub token:"
+            echo -e "   ${CYAN}export GITHUB_TOKEN='your_personal_access_token'${NC}"
+        else
+            echo -e "   ${INFO} Check your token permissions and repository access"
+        fi
         echo -e "   ${INFO} Changes are committed locally in: $REPO_DIR"
     fi
     
@@ -426,10 +460,24 @@ cleanup() {
 
 main() {
     print_header
-    
+
     echo -e "${CYAN}Exporting NixOS configuration from this machine...${NC}"
     echo
-    
+
+    # Check for GitHub authentication
+    if [ -z "$GITHUB_TOKEN" ]; then
+        echo -e "${YELLOW}${WARNING} GitHub token not set${NC}"
+        echo -e "${INFO} For private repositories, set your Personal Access Token:"
+        echo -e "${CYAN}export GITHUB_TOKEN='ghp_your_token_here'${NC}"
+        echo -e "${INFO} Or run with: ${CYAN}GITHUB_TOKEN='your_token' $0${NC}"
+        echo
+        echo -e "${INFO} Continuing without authentication (may fail for private repos)..."
+        echo
+    else
+        echo -e "${GREEN}${CHECK} GitHub authentication configured${NC}"
+        echo
+    fi
+
     # Check if running as root or with sudo access
     if [[ $EUID -eq 0 ]]; then
         echo -e "${WARNING} Running as root - this is fine but not required"
