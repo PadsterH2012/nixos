@@ -147,7 +147,7 @@
     mkdir -p /home/paddy/.var/app/com.visualstudio.code/config/Code/User
     mkdir -p /home/paddy/.config/Code/User
 
-    # VS Code settings optimized for Augment Code
+    # VS Code settings optimized for Augment Code with MCP integration
     cat > /home/paddy/.var/app/com.visualstudio.code/config/Code/User/settings.json << 'EOF'
 {
   "terminal.integrated.fontSize": 14,
@@ -158,10 +158,49 @@
   "terminal.integrated.enableBell": false,
   "editor.fontSize": 14,
   "editor.fontFamily": "'JetBrains Mono', 'Fira Code', monospace",
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.wordWrap": "on",
+  "editor.minimap.enabled": true,
+  "editor.rulers": [80, 120],
   "workbench.colorTheme": "Default Dark+",
+  "workbench.iconTheme": "vs-seti",
+  "workbench.startupEditor": "newUntitledFile",
   "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 1000,
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
   "git.enableSmartCommit": true,
-  "telemetry.telemetryLevel": "off"
+  "git.confirmSync": false,
+  "git.autofetch": true,
+  "telemetry.telemetryLevel": "off",
+  "update.showReleaseNotes": false,
+  "augment.enableTelemetry": false,
+  "augment.enableAnalytics": false,
+  "augment.autoIndex": true,
+  "augment.mcpServers": {
+    "central-obsidian": {
+      "url": "http://10.202.28.111:9090/obsidian-mcp-tools/sse"
+    },
+    "central-rpg": {
+      "url": "http://10.202.28.111:9090/rpg-tools/sse"
+    },
+    "central-search": {
+      "url": "http://10.202.28.111:9090/brave-search/sse"
+    },
+    "central-memory": {
+      "url": "http://10.202.28.111:9090/memory/sse"
+    },
+    "central-mongodb": {
+      "url": "http://10.202.28.111:9090/mongodb/sse"
+    },
+    "central-context7": {
+      "url": "http://10.202.28.111:9090/Context7/sse"
+    },
+    "central-jenkins": {
+      "url": "http://10.202.28.111:9090/jenkins-mcp/sse"
+    }
+  }
 }
 EOF
 
