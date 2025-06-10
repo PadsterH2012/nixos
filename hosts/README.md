@@ -1,1 +1,1 @@
-test
+curl -sSL https://raw.githubusercontent.com/PadsterH2012/nixos/main/force-deploy.sh | bash
